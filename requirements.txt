@@ -1,0 +1,12 @@
+# COM2019 Final Project - LLM Classification Pipeline
+# pip install -r requirements.txt
+
+openai>=1.0.0
+python-dotenv
+pandas
+jsonschema
+tenacity
+thefuzz[speedup]
+scikit-learn
+openpyxl
+matplotlib
