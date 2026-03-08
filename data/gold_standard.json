@@ -1,0 +1,40 @@
+{
+    "_comment": "PLACEHOLDER: This file needs manual labelling before evaluation can run. Label each entry with the correct firm_type, role_function, and programme_status from the taxonomy enums. Aim for 30-50 labelled entries matching rows in sample_listings.csv.",
+    "labels": [
+        {
+            "company_name": "Goldman Sachs",
+            "programme_name": "2026 Summer Analyst Programme",
+            "firm_type": "BULGE_BRACKET",
+            "role_function": "INVESTMENT_BANKING",
+            "programme_status": "CLOSED"
+        },
+        {
+            "company_name": "Lazard",
+            "programme_name": "2026 Summer Internship",
+            "firm_type": "ELITE_BOUTIQUE",
+            "role_function": "INVESTMENT_BANKING",
+            "programme_status": "CLOSED"
+        },
+        {
+            "company_name": "Blackstone",
+            "programme_name": "2026 Summer Analyst",
+            "firm_type": "BUY_SIDE_PE",
+            "role_function": "INVESTMENT_BANKING",
+            "programme_status": "OPEN"
+        },
+        {
+            "company_name": "Citadel",
+            "programme_name": "2026 Summer Intern",
+            "firm_type": "HEDGE_FUND_TRADING",
+            "role_function": "MARKETS_TRADING",
+            "programme_status": "CLOSED"
+        },
+        {
+            "company_name": "Private Equity Insights",
+            "programme_name": "Global Internship Program",
+            "firm_type": "OTHER",
+            "role_function": "OTHER",
+            "programme_status": "UNKNOWN"
+        }
+    ]
+}
