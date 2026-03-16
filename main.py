@@ -116,7 +116,8 @@ def merge_results(df: pd.DataFrame, baseline_results: list[dict],
         for key in ["firm_type", "firm_type_confidence", "firm_type_rationale",
                      "role_function", "role_function_confidence", "role_function_rationale",
                      "programme_status", "programme_status_confidence",
-                     "programme_status_rationale"]:
+                     "programme_status_rationale",
+                     "model_used", "escalated"]:
             df[f"llm_{key}"] = [r.get(key, "") for r in llm_results]
 
     return df
@@ -155,7 +156,7 @@ def run_pipeline(args):
         print(f"\n[3/5] No valid OPENAI_API_KEY in .env - skipping LLM classification")
         print(f"  Set your key in .env: OPENAI_API_KEY=sk-...")
     else:
-        print(f"\n[3/5] Running LLM classification (gpt-4o-mini)")
+        print(f"\n[3/5] Running LLM classification (gpt-4o-mini -> gpt-4o escalation)")
         try:
             llm_results = run_llm_classification(listings)
         except Exception as e:
@@ -179,9 +180,11 @@ def run_pipeline(args):
     print(f"\n{'=' * 60}")
     print(f"PIPELINE COMPLETE")
     print(f"{'=' * 60}")
+    escalated_count = sum(1 for r in (llm_results or []) if r.get("escalated"))
     print(f"  Rows processed:       {len(df)}")
     print(f"  Baseline classified:  {len(baseline_results)}")
     print(f"  LLM classified:       {len(llm_results) if llm_results else 0}")
+    print(f"  Escalated to gpt-4o:  {escalated_count}")
     print(f"  Dry run:              {args.dry_run}")
     print(f"  Output:               {filepath}")
     print(f"{'=' * 60}")

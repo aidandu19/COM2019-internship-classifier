@@ -22,6 +22,12 @@ client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 CACHE_DIR = os.path.join("data", "cache")
 
+# Model escalation: listings where ALL confidence scores fall below this
+# threshold get re-classified with gpt-4o for higher accuracy.
+ESCALATION_THRESHOLD = 0.7
+MODEL_MINI = "gpt-4o-mini"
+MODEL_FULL = "gpt-4o"
+
 # ---------------------------------------------------------------------------
 # System prompt: defines the classification engine persona
 # ---------------------------------------------------------------------------
@@ -122,15 +128,22 @@ def _save_to_cache(key: str, data: dict):
     wait=wait_exponential(min=2, max=30),
     retry=retry_if_exception_type(Exception),
 )
-def _call_chat_completions(system_msg: str, user_msg: str) -> str:
+def _call_chat_completions(system_msg: str, user_msg: str,
+                           model: str = MODEL_MINI) -> str:
     """Call OpenAI Chat Completions API with structured output format.
 
     Uses response_format with json_schema to enforce the output structure
     directly at the API level (ILO 6 requirement). The model is constrained
     to return valid JSON matching our schema.
+
+    Args:
+        system_msg: system prompt with classification instructions.
+        user_msg: formatted batch of listings to classify.
+        model: OpenAI model ID. Defaults to gpt-4o-mini; escalation
+               uses gpt-4o for low-confidence reclassification.
     """
     response = client.chat.completions.create(
-        model="gpt-4o-mini",
+        model=model,
         messages=[
             {"role": "system", "content": system_msg},
             {"role": "user", "content": user_msg},
@@ -138,9 +151,6 @@ def _call_chat_completions(system_msg: str, user_msg: str) -> str:
         temperature=0.0,
         response_format=OPENAI_RESPONSE_FORMAT,
     )
-    # TODO: model escalation - for low-confidence results, reclassify with
-    # gpt-4o here. Would check each classification's confidence scores and
-    # re-submit only the low-confidence listings to the stronger model.
     return response.choices[0].message.content
 
 
@@ -245,7 +255,98 @@ def _fallback_result(listing: dict) -> dict:
         "programme_status_confidence": 0.0,
         "programme_status_rationale": "API unavailable - fallback result",
         "source": "fallback",
+        "model_used": "none",
+        "escalated": False,
     }
+
+
+# ---------------------------------------------------------------------------
+# Model escalation: re-classify low-confidence results with gpt-4o
+# ---------------------------------------------------------------------------
+
+def _needs_escalation(classification: dict) -> bool:
+    """Check if a classification has any confidence score below the threshold.
+
+    Returns True if ANY of the three confidence scores (firm_type, role_function,
+    programme_status) falls below ESCALATION_THRESHOLD, indicating the mini
+    model was uncertain and the stronger model may do better.
+    """
+    for field in ("firm_type_confidence", "role_function_confidence",
+                  "programme_status_confidence"):
+        try:
+            if float(classification.get(field, 0.0)) < ESCALATION_THRESHOLD:
+                return True
+        except (ValueError, TypeError):
+            return True
+    return False
+
+
+def _escalate_batch(listings: list[dict], classifications: list[dict],
+                    system_msg: str) -> list[dict]:
+    """Re-classify low-confidence listings using gpt-4o.
+
+    Only the listings that need escalation are sent to gpt-4o. The rest
+    keep their gpt-4o-mini results. Each result is tagged with model_used
+    and escalated fields for traceability.
+
+    Args:
+        listings: original listing dicts (full batch).
+        classifications: gpt-4o-mini results (same order as listings).
+        system_msg: system prompt to reuse for the escalation call.
+
+    Returns:
+        Updated classifications list with escalated results merged in.
+    """
+    # Identify which indices need escalation
+    escalation_indices = []
+    escalation_listings = []
+    for i, (listing, clf) in enumerate(zip(listings, classifications)):
+        if _needs_escalation(clf):
+            escalation_indices.append(i)
+            escalation_listings.append(listing)
+
+    if not escalation_listings:
+        # Tag all results as mini, no escalation needed
+        for clf in classifications:
+            clf["model_used"] = MODEL_MINI
+            clf["escalated"] = False
+        return classifications
+
+    print(f"  [escalate] {len(escalation_listings)}/{len(listings)} listings "
+          f"below {ESCALATION_THRESHOLD} confidence - escalating to {MODEL_FULL}")
+
+    # Build a new batch message for just the low-confidence listings
+    escalation_msg = _build_batch_message(escalation_listings)
+
+    try:
+        raw_text = _call_chat_completions(system_msg, escalation_msg,
+                                          model=MODEL_FULL)
+        try:
+            escalated_result = _parse_and_validate(raw_text)
+        except (json.JSONDecodeError, ValueError) as e:
+            print(f"  [escalate] Validation failed on gpt-4o response, "
+                  f"attempting repair: {e}")
+            escalated_result = _repair_response(raw_text, str(e))
+
+        escalated_classifications = escalated_result["classifications"]
+
+        # Merge escalated results back into the original list
+        for idx, esc_clf in zip(escalation_indices, escalated_classifications):
+            esc_clf["model_used"] = MODEL_FULL
+            esc_clf["escalated"] = True
+            classifications[idx] = esc_clf
+
+    except Exception as e:
+        # Escalation failed - keep the mini results, just tag them
+        print(f"  [escalate] gpt-4o call failed ({e}), keeping gpt-4o-mini results")
+
+    # Tag any remaining results that weren't escalated
+    for clf in classifications:
+        if "model_used" not in clf:
+            clf["model_used"] = MODEL_MINI
+            clf["escalated"] = False
+
+    return classifications
 
 
 # ---------------------------------------------------------------------------
@@ -255,6 +356,10 @@ def _fallback_result(listing: dict) -> dict:
 def classify_batch(listings: list[dict]) -> list[dict]:
     """Classify a batch of internship listings via the LLM.
 
+    Uses a two-tier model strategy:
+    1. Initial classification with gpt-4o-mini (fast, cheap)
+    2. Escalation to gpt-4o for any listings where confidence < ESCALATION_THRESHOLD
+
     Args:
         listings: list of dicts, each with company_name, programme_name,
                   opening_date, closing_date, latest_stage, etc.
@@ -262,7 +367,8 @@ def classify_batch(listings: list[dict]) -> list[dict]:
     Returns:
         List of classification dicts in the same order as input.
         Each dict contains firm_type, role_function, programme_status,
-        per-field confidence scores, and per-field rationale strings.
+        per-field confidence scores, per-field rationale strings,
+        plus model_used and escalated fields.
     """
     # Build the full user message for this batch
     user_msg = _build_batch_message(listings)
@@ -277,9 +383,9 @@ def classify_batch(listings: list[dict]) -> list[dict]:
     # Build system message with few-shot examples
     system_msg = SYSTEM_PROMPT + "\n\n" + FEW_SHOT_EXAMPLES
 
-    # Call API with retry and repair loop
+    # Call gpt-4o-mini first, then escalate low-confidence results to gpt-4o
     try:
-        raw_text = _call_chat_completions(system_msg, user_msg)
+        raw_text = _call_chat_completions(system_msg, user_msg, model=MODEL_MINI)
         try:
             result = _parse_and_validate(raw_text)
         except (json.JSONDecodeError, ValueError) as e:
@@ -287,9 +393,14 @@ def classify_batch(listings: list[dict]) -> list[dict]:
             print(f"  [llm] Validation failed, attempting repair: {e}")
             result = _repair_response(raw_text, str(e))
 
-        # Cache the successful result
-        _save_to_cache(cache_key, result)
-        return result["classifications"]
+        classifications = result["classifications"]
+
+        # Model escalation: re-classify low-confidence results with gpt-4o
+        classifications = _escalate_batch(listings, classifications, system_msg)
+
+        # Cache the final result (includes escalated results)
+        _save_to_cache(cache_key, {"classifications": classifications})
+        return classifications
 
     except Exception as e:
         # Graceful fallback: return UNKNOWN for all listings rather than crash

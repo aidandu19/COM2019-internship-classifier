@@ -72,6 +72,9 @@ COLUMNS = [
     ("LLM: Status",             "llm_programme_status"),
     ("LLM: Status Conf",        "llm_programme_status_confidence"),
     ("LLM: Status Rationale",   "llm_programme_status_rationale"),
+    # Model escalation tracking
+    ("LLM: Model Used",         "llm_model_used"),
+    ("LLM: Escalated",          "llm_escalated"),
 ]
 
 
