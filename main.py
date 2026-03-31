@@ -131,7 +131,7 @@ def run_pipeline(args):
     """Main pipeline: load -> baseline -> (optional) LLM -> merge -> export."""
 
     api_key = os.getenv("OPENAI_API_KEY", "")
-    has_api_key = bool(api_key) and api_key != "API_key_here"
+    has_api_key = bool(api_key) and api_key not in ("API_key_here", "your-key-here")
 
     # --- Step 1: Load data ---
     print(f"\n[1/5] Loading data from {args.data_path}")
