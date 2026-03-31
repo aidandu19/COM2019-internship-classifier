@@ -1,7 +1,8 @@
 .env
 __pycache__/
 .venv/
-output/
 .DS_Store
 *.pyc
 data/cache/
+.claude/
+~$*.xlsx

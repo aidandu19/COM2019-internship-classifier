@@ -229,11 +229,7 @@ if __name__ == "__main__":
     if args.evaluate:
         try:
             from src.evaluate import run_full_evaluation
-            run_full_evaluation(
-                data_path=args.data_path,
-                baseline_method="rule",
-                llm_results_available=(not args.dry_run),
-            )
+            run_full_evaluation()
         except ImportError:
             print("[evaluate] evaluate.py not yet available, skipping.")
         except Exception as e:

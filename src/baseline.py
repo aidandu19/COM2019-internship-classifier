@@ -75,14 +75,14 @@ FIRM_LOOKUP = {
     "man group": "ASSET_MANAGEMENT",
     "newton": "ASSET_MANAGEMENT",
     # Hedge Fund / Trading
-    "citadel": "HEDGE_FUND_TRADING",
-    "millennium": "HEDGE_FUND_TRADING",
-    "point72": "HEDGE_FUND_TRADING",
-    "two sigma": "HEDGE_FUND_TRADING",
-    "de shaw": "HEDGE_FUND_TRADING",
-    "d.e. shaw": "HEDGE_FUND_TRADING",
-    "bridgewater": "HEDGE_FUND_TRADING",
-    "aqr": "HEDGE_FUND_TRADING",
+    "citadel": "HEDGE_FUND",
+    "millennium": "HEDGE_FUND",
+    "point72": "HEDGE_FUND",
+    "two sigma": "HEDGE_FUND",
+    "de shaw": "HEDGE_FUND",
+    "d.e. shaw": "HEDGE_FUND",
+    "bridgewater": "HEDGE_FUND",
+    "aqr": "HEDGE_FUND",
     # Quant / Prop Trading
     "jane street": "QUANT_PROP",
     "optiver": "QUANT_PROP",
@@ -94,10 +94,14 @@ FIRM_LOOKUP = {
     "mckinsey": "CONSULTING",
     "bain": "CONSULTING",
     "bcg": "CONSULTING",
-    "deloitte": "CONSULTING",
-    "pwc": "CONSULTING",
-    "ey": "CONSULTING",
-    "kpmg": "CONSULTING",
+    "deloitte": "ACCOUNTING",
+    "pwc": "ACCOUNTING",
+    "ey": "ACCOUNTING",
+    "kpmg": "ACCOUNTING",
+    "bdo": "ACCOUNTING",
+    "grant thornton": "ACCOUNTING",
+    "rsm": "ACCOUNTING",
+    "mazars": "ACCOUNTING",
     "oliver wyman": "CONSULTING",
     "roland berger": "CONSULTING",
 }
@@ -208,24 +212,42 @@ def classify_status(row: dict) -> tuple[str, float]:
 # Random baseline: trivial lower-bound comparator
 # ---------------------------------------------------------------------------
 
-def random_baseline(listings: list[dict]) -> list[dict]:
-    """Assign random labels to each listing. Lower-bound baseline for evaluation.
+def random_baseline(listings: list[dict], class_weights: dict | None = None) -> list[dict]:
+    """Assign random labels proportional to class frequency (stratified baseline).
+
+    When *class_weights* is provided it should map dimension names to
+    Counter-like dicts, e.g.::
+
+        {"firm_type": {"BULGE_BRACKET": 17, "OTHER": 22, ...}, ...}
+
+    If omitted, falls back to uniform random (legacy behaviour).
 
     Returns list of classification dicts matching the LLM output schema.
     """
+    def _pick(values, weights_dict):
+        if weights_dict:
+            population = list(weights_dict.keys())
+            weights = list(weights_dict.values())
+            return random.choices(population, weights=weights, k=1)[0]
+        return random.choice(values)
+
+    ft_w = (class_weights or {}).get("firm_type")
+    rf_w = (class_weights or {}).get("role_function")
+    ps_w = (class_weights or {}).get("programme_status")
+
     results = []
     for listing in listings:
         results.append({
             "company_name": listing.get("company_name", ""),
-            "firm_type": random.choice(FIRM_TYPES),
+            "firm_type": _pick(FIRM_TYPES, ft_w),
             "firm_type_confidence": 0.0,
-            "firm_type_rationale": "Random baseline assignment",
-            "role_function": random.choice(ROLE_FUNCTIONS),
+            "firm_type_rationale": "Stratified random baseline (proportional to class frequency)",
+            "role_function": _pick(ROLE_FUNCTIONS, rf_w),
             "role_function_confidence": 0.0,
-            "role_function_rationale": "Random baseline assignment",
-            "programme_status": random.choice(PROGRAMME_STATUSES),
+            "role_function_rationale": "Stratified random baseline (proportional to class frequency)",
+            "programme_status": _pick(PROGRAMME_STATUSES, ps_w),
             "programme_status_confidence": 0.0,
-            "programme_status_rationale": "Random baseline assignment",
+            "programme_status_rationale": "Stratified random baseline (proportional to class frequency)",
             "source": "random_baseline",
         })
     return results

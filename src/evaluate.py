@@ -1,67 +1,267 @@
 # evaluate.py - evaluation pipeline for COM2019 internship classifier
 #
-# Compares random baseline vs rule-based baseline vs LLM classifier using:
+# Reads hand-labelled gold standard (153 entries) from xlsx, extracts matching
+# LLM + baseline predictions from classified_listings.xlsx (501 entries), and
+# compares random baseline vs rule-based baseline vs LLM classifier using:
 # - Per-class precision, recall, F1 (sklearn classification_report)
 # - Confusion matrix heatmaps
 # - Confidence calibration analysis (binned accuracy vs stated confidence)
 # - Expected Calibration Error (ECE)
 # - Reliability diagrams
-#
-# All functions handle the case where gold_standard is None gracefully,
-# printing a warning and returning early. This allows the evaluation
-# module to be imported and called before manual labelling is complete.
+# - Error analysis (top confusion pairs per dimension)
+# - Class distribution report
+# - Unseen split descriptive statistics (348 non-gold entries)
 
 import os
-import json
+import random
+from collections import Counter
 
-import pandas as pd
 import numpy as np
 import matplotlib
-matplotlib.use("Agg")  # non-interactive backend for saving plots
+matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from sklearn.metrics import classification_report, confusion_matrix
 
-from .taxonomy import FIRM_TYPES, ROLE_FUNCTIONS, PROGRAMME_STATUSES
+from .taxonomy import (
+    FIRM_TYPES, ROLE_FUNCTIONS, PROGRAMME_STATUSES,
+    FIRM_TYPE_CODES, ROLE_FUNCTION_CODES, PROGRAMME_STATUS_CODES,
+)
 from .baseline import rule_based_baseline, random_baseline
 
 
 FIGURES_DIR = os.path.join("output", "figures")
-GOLD_STANDARD_PATH = os.path.join("data", "gold_standard.json")
+GOLD_STANDARD_PATH = os.path.join("data", "GOLD STANDARD HAND FILLED LISTINGS.xlsx")
+CLASSIFIED_PATH = os.path.join("data", "classified_listings.xlsx")
 
 # Calibration bin edges: four bins covering low/medium/high/very-high confidence
 CALIBRATION_BINS = [0.0, 0.3, 0.6, 0.8, 1.0]
 
 
 # ---------------------------------------------------------------------------
-# 1. Load gold standard labels
+# 1. Load gold standard from xlsx
 # ---------------------------------------------------------------------------
 
-def load_gold_standard(path=GOLD_STANDARD_PATH):
-    """Load hand-labelled ground truth from JSON.
+def _convert_code(code, mapping, valid_list):
+    """Convert a short code to its full enum name. Returns None on failure."""
+    if code is None or str(code).strip() == "":
+        return None
+    code_str = str(code).strip().upper()
+    if code_str in valid_list:
+        return code_str
+    return mapping.get(code_str)
 
-    Returns a list of label dicts, or None if the file is a placeholder
-    or doesn't exist. Downstream functions check for None and skip gracefully.
+
+def load_gold_standard(path=GOLD_STANDARD_PATH):
+    """Load hand-labelled gold standard from xlsx.
+
+    Reads the 'Gold Standard' sheet with columns:
+      Col 2: Company, Col 3: Programme, Col 4: Opening, Col 5: Closing,
+      Col 6: YOUR_st, Col 7: YOUR_ft, Col 8: YOUR_rf, Col 9: rationale
+
+    Returns list of dicts with full enum names, or None if file missing.
     """
     if not os.path.exists(path):
-        print("[evaluate] Gold standard file not found. Skipping evaluation.")
+        print(f"[evaluate] Gold standard not found at {path}")
         return None
 
-    with open(path) as f:
-        data = json.load(f)
+    from openpyxl import load_workbook
+    wb = load_workbook(path)
 
-    # Check if this is still the placeholder file
-    labels = data.get("labels", data) if isinstance(data, dict) else data
-
-    if not isinstance(labels, list) or len(labels) < 5:
-        print("[evaluate] Gold standard not yet labelled (placeholder detected). Skipping evaluation.")
+    if "Gold Standard" not in wb.sheetnames:
+        print(f"[evaluate] Sheet 'Gold Standard' not found. Available: {wb.sheetnames}")
+        wb.close()
         return None
 
-    # Check for the placeholder comment marker
-    if isinstance(data, dict) and "_comment" in data:
-        print("[evaluate] Gold standard is still a placeholder. Skipping evaluation.")
+    ws = wb["Gold Standard"]
+    entries = []
+    warnings = []
+
+    for row_idx in range(2, ws.max_row + 1):
+        company = ws.cell(row=row_idx, column=2).value
+        if company is None or str(company).strip() == "":
+            continue
+
+        company = str(company).strip()
+        programme = str(ws.cell(row=row_idx, column=3).value or "").strip()
+        opening = str(ws.cell(row=row_idx, column=4).value or "").strip()
+        closing = str(ws.cell(row=row_idx, column=5).value or "").strip()
+
+        ft_raw = ws.cell(row=row_idx, column=7).value
+        st_raw = ws.cell(row=row_idx, column=6).value
+        rf_raw = ws.cell(row=row_idx, column=8).value
+
+        ft = _convert_code(ft_raw, FIRM_TYPE_CODES, FIRM_TYPES)
+        st = _convert_code(st_raw, PROGRAMME_STATUS_CODES, PROGRAMME_STATUSES)
+        rf = _convert_code(rf_raw, ROLE_FUNCTION_CODES, ROLE_FUNCTIONS)
+
+        if ft is None:
+            warnings.append(f"  Row {row_idx} ({company}): unrecognised firm_type code '{ft_raw}'")
+        if st is None:
+            warnings.append(f"  Row {row_idx} ({company}): unrecognised programme_status code '{st_raw}'")
+        if rf is None:
+            warnings.append(f"  Row {row_idx} ({company}): unrecognised role_function code '{rf_raw}'")
+
+        # Skip entries with any unresolved label
+        if ft is None or st is None or rf is None:
+            continue
+
+        entries.append({
+            "company_name": company,
+            "programme_name": programme,
+            "opening_date": opening,
+            "closing_date": closing,
+            "firm_type": ft,
+            "programme_status": st,
+            "role_function": rf,
+        })
+
+    wb.close()
+
+    if warnings:
+        print(f"[evaluate] {len(warnings)} label warnings:")
+        for w in warnings:
+            print(w)
+
+    if len(entries) < 5:
+        print(f"[evaluate] Only {len(entries)} valid gold standard entries, need >= 5.")
         return None
 
-    return labels
+    return entries
+
+
+# ---------------------------------------------------------------------------
+# 1b. Load classified results from xlsx (501 entries)
+# ---------------------------------------------------------------------------
+
+def load_classified_results(path=CLASSIFIED_PATH):
+    """Load pipeline output from classified_listings.xlsx.
+
+    Returns list of dicts with LLM and baseline predictions, or None if missing.
+
+    Column mapping (from src/export.py):
+      1: Company Name, 2: Programme, 3-5: dates/stage,
+      6: Baseline Firm Type, 7: Baseline Firm Conf, 8: Baseline Role, 9: Baseline Status,
+      10: LLM Firm Type, 11: LLM Firm Conf, 12: LLM Firm Rationale,
+      13: LLM Role, 14: LLM Role Conf, 15: LLM Role Rationale,
+      16: LLM Status, 17: LLM Status Conf, 18: LLM Status Rationale,
+      19: LLM Model Used, 20: LLM Escalated
+    """
+    if not os.path.exists(path):
+        print(f"[evaluate] Classified results not found at {path}")
+        return None
+
+    from openpyxl import load_workbook
+    wb = load_workbook(path)
+    ws = wb.active
+    results = []
+
+    for row_idx in range(2, ws.max_row + 1):
+        company = ws.cell(row=row_idx, column=1).value
+        if company is None or str(company).strip() == "":
+            continue
+
+        def _cell(col):
+            v = ws.cell(row=row_idx, column=col).value
+            return v if v is not None else ""
+
+        def _float(col):
+            v = ws.cell(row=row_idx, column=col).value
+            try:
+                return float(v)
+            except (ValueError, TypeError):
+                return 0.5
+
+        results.append({
+            "company_name": str(company).strip(),
+            "programme_name": str(_cell(2)).strip(),
+            "opening_date": str(_cell(3)).strip(),
+            "closing_date": str(_cell(4)).strip(),
+            "latest_stage": str(_cell(5)).strip(),
+            # Baseline
+            "baseline_firm_type": str(_cell(6)).strip(),
+            "baseline_firm_type_confidence": _float(7),
+            "baseline_role_function": str(_cell(8)).strip(),
+            "baseline_programme_status": str(_cell(9)).strip(),
+            # LLM
+            "firm_type": str(_cell(10)).strip(),
+            "firm_type_confidence": _float(11),
+            "firm_type_rationale": str(_cell(12)).strip(),
+            "role_function": str(_cell(13)).strip(),
+            "role_function_confidence": _float(14),
+            "role_function_rationale": str(_cell(15)).strip(),
+            "programme_status": str(_cell(16)).strip(),
+            "programme_status_confidence": _float(17),
+            "programme_status_rationale": str(_cell(18)).strip(),
+            "model_used": str(_cell(19)).strip(),
+            "escalated": _cell(20),
+        })
+
+    wb.close()
+    return results
+
+
+# ---------------------------------------------------------------------------
+# 1c. Match gold standard against classified results
+# ---------------------------------------------------------------------------
+
+def _normalize_for_matching(text):
+    """Normalize text for fuzzy matching across encoding differences.
+
+    The TRACKR CSV uses latin-1 encoding which mangles unicode characters:
+    en/em dashes become Ð, accented characters may be lost, etc.
+    """
+    import unicodedata
+    # Normalize unicode (e.g. é -> e)
+    text = unicodedata.normalize("NFKD", text)
+    text = "".join(c for c in text if not unicodedata.combining(c))
+    # Collapse all dash-like characters to a simple hyphen
+    for ch in ("\u2013", "\u2014", "\u00d0", "\u2010", "\u2011", "\u2012"):
+        text = text.replace(ch, "-")
+    return text.strip().lower()
+
+
+def match_gold_to_classified(gold_entries, classified_results):
+    """Match gold standard entries to their predictions in the classified results.
+
+    Uses (company_name, programme_name) tuple for matching to handle duplicate
+    company names correctly (e.g. Howden has two programmes with different firm types).
+    Normalizes text to handle encoding differences between xlsx and CSV sources.
+
+    Returns:
+        matched: list of (gold_entry, classified_entry) tuples
+        unmatched_gold: list of gold entries with no match
+        unseen: list of classified entries not in the gold standard
+    """
+    # Build lookup from classified results using normalized keys
+    classified_lookup = {}
+    for r in classified_results:
+        key = (_normalize_for_matching(r["company_name"]),
+               _normalize_for_matching(r["programme_name"]))
+        classified_lookup[key] = r
+
+    matched = []
+    unmatched_gold = []
+
+    matched_classified_keys = set()
+    for g in gold_entries:
+        key = (_normalize_for_matching(g["company_name"]),
+               _normalize_for_matching(g["programme_name"]))
+
+        if key in classified_lookup:
+            matched.append((g, classified_lookup[key]))
+            matched_classified_keys.add(key)
+        else:
+            unmatched_gold.append(g)
+
+    # Unseen = classified entries not matched to any gold standard entry
+    unseen = []
+    for r in classified_results:
+        key = (_normalize_for_matching(r["company_name"]),
+               _normalize_for_matching(r["programme_name"]))
+        if key not in matched_classified_keys:
+            unseen.append(r)
+
+    return matched, unmatched_gold, unseen
 
 
 # ---------------------------------------------------------------------------
@@ -74,14 +274,14 @@ def evaluate_classifier(predictions, gold_standard, label=""):
     Args:
         predictions: list of predicted label strings.
         gold_standard: list of true label strings.
-        label: descriptive name for printing (e.g. "LLM - firm_type").
+        label: descriptive name for printing.
 
     Returns:
         Dict with macro/weighted F1 and the full classification report,
         or None if gold_standard is None.
     """
-    if gold_standard is None:
-        print(f"[evaluate] Gold standard not yet available, skipping evaluation for {label}")
+    if gold_standard is None or len(gold_standard) == 0:
+        print(f"[evaluate] No data for {label}, skipping.")
         return None
 
     all_labels = sorted(set(predictions + gold_standard))
@@ -110,12 +310,8 @@ def evaluate_classifier(predictions, gold_standard, label=""):
 # ---------------------------------------------------------------------------
 
 def confusion_matrix_plot(predictions, gold_standard, label="firm_type", save_path=None):
-    """Generate and save a confusion matrix heatmap.
-
-    Returns the confusion matrix array, or None if gold_standard is None.
-    """
-    if gold_standard is None:
-        print(f"[evaluate] Gold standard not yet available, skipping confusion matrix for {label}")
+    """Generate and save a confusion matrix heatmap. Returns the cm array."""
+    if gold_standard is None or len(gold_standard) == 0:
         return None
 
     all_labels = sorted(set(predictions + gold_standard))
@@ -133,7 +329,6 @@ def confusion_matrix_plot(predictions, gold_standard, label="firm_type", save_pa
     ax.set_xlabel("Predicted")
     ax.set_ylabel("True")
 
-    # Annotate cells with counts
     for i in range(len(all_labels)):
         for j in range(len(all_labels)):
             ax.text(j, i, str(cm[i, j]), ha="center", va="center",
@@ -159,21 +354,15 @@ def confusion_matrix_plot(predictions, gold_standard, label="firm_type", save_pa
 def calibration_analysis(predictions, gold_standard, confidences, label=""):
     """Group predictions by confidence band and compute actual accuracy.
 
-    Compares stated confidence against real accuracy to assess whether
-    the classifier is well-calibrated (i.e. 80% confidence = 80% correct).
-
     Returns dict with bin stats, or None if gold_standard is None.
     """
-    if gold_standard is None:
-        print(f"[evaluate] Gold standard not yet available, skipping calibration for {label}")
+    if gold_standard is None or len(gold_standard) == 0:
         return None
 
     bins = []
-    total = len(gold_standard)
 
     for i in range(len(CALIBRATION_BINS) - 1):
         lo, hi = CALIBRATION_BINS[i], CALIBRATION_BINS[i + 1]
-        # Last bin is inclusive on both ends
         if i < len(CALIBRATION_BINS) - 2:
             mask = [(lo <= c < hi) for c in confidences]
         else:
@@ -211,15 +400,11 @@ def calibration_analysis(predictions, gold_standard, confidences, label=""):
 # ---------------------------------------------------------------------------
 
 def calculate_ece(predictions, gold_standard, confidences):
-    """Compute Expected Calibration Error.
+    """Compute ECE = sum over bins of (bin_weight * |accuracy - avg_confidence|).
 
-    ECE = sum over bins of (bin_weight * |accuracy - avg_confidence|).
     Lower is better; 0.0 means perfectly calibrated.
-
-    Returns float ECE value, or None if gold_standard is None.
     """
-    if gold_standard is None:
-        print("[evaluate] Gold standard not yet available, skipping ECE.")
+    if gold_standard is None or len(gold_standard) == 0:
         return None
 
     cal = calibration_analysis(predictions, gold_standard, confidences)
@@ -240,15 +425,8 @@ def calculate_ece(predictions, gold_standard, confidences):
 # ---------------------------------------------------------------------------
 
 def reliability_diagram(predictions, gold_standard, confidences, label="", save_path=None):
-    """Plot a reliability diagram showing calibration quality.
-
-    Perfect calibration = diagonal line. Bars above = underconfident,
-    bars below = overconfident.
-
-    Returns None if gold_standard is None.
-    """
-    if gold_standard is None:
-        print(f"[evaluate] Gold standard not yet available, skipping reliability diagram for {label}")
+    """Plot a reliability diagram showing calibration quality."""
+    if gold_standard is None or len(gold_standard) == 0:
         return None
 
     cal = calibration_analysis(predictions, gold_standard, confidences)
@@ -281,53 +459,224 @@ def reliability_diagram(predictions, gold_standard, confidences, label="", save_
 
 
 # ---------------------------------------------------------------------------
-# 7. Full evaluation runner
+# 7. Error analysis: top confusion pairs
 # ---------------------------------------------------------------------------
 
-def run_full_evaluation(data_path="data/sample_listings.csv",
-                        baseline_method="rule",
-                        llm_results_available=False):
+def error_analysis(y_true, y_pred, dimension, n=5):
+    """Extract top-N confused label pairs from predictions.
+
+    Prints a ranked table of (true_label -> predicted_label, count) for
+    off-diagonal confusion matrix entries. For firm_type, specifically
+    flags Elite Boutique <-> Middle Market IB confusion.
+    """
+    if not y_true or not y_pred:
+        return
+
+    all_labels = sorted(set(y_true + y_pred))
+    cm = confusion_matrix(y_true, y_pred, labels=all_labels)
+
+    # Collect off-diagonal (true, pred, count) triples
+    errors = []
+    for i, true_label in enumerate(all_labels):
+        for j, pred_label in enumerate(all_labels):
+            if i != j and cm[i, j] > 0:
+                errors.append((true_label, pred_label, cm[i, j]))
+
+    errors.sort(key=lambda x: x[2], reverse=True)
+
+    print(f"\n--- Error Analysis: {dimension} (top {n} confusions) ---")
+    if not errors:
+        print("  No misclassifications found.")
+        return
+
+    for true_label, pred_label, count in errors[:n]:
+        print(f"  {true_label} -> {pred_label}: {count} times")
+
+    # Specific hypothesis test for firm_type: EB <-> MM IB
+    if dimension == "firm_type":
+        eb_idx = all_labels.index("ELITE_BOUTIQUE") if "ELITE_BOUTIQUE" in all_labels else None
+        mm_idx = all_labels.index("MIDDLE_MARKET_IB") if "MIDDLE_MARKET_IB" in all_labels else None
+        if eb_idx is not None and mm_idx is not None:
+            eb_to_mm = cm[eb_idx, mm_idx]
+            mm_to_eb = cm[mm_idx, eb_idx]
+            total_eb = sum(cm[eb_idx, :])
+            total_mm = sum(cm[mm_idx, :])
+            print(f"\n  Hypothesis check: Elite Boutique <-> Middle Market IB")
+            print(f"    EB misclassified as MM: {eb_to_mm}/{total_eb} ({eb_to_mm/max(total_eb,1)*100:.0f}%)")
+            print(f"    MM misclassified as EB: {mm_to_eb}/{total_mm} ({mm_to_eb/max(total_mm,1)*100:.0f}%)")
+
+
+# ---------------------------------------------------------------------------
+# 8. Class distribution report
+# ---------------------------------------------------------------------------
+
+def print_class_distribution(gold_entries):
+    """Print gold standard class frequencies per dimension. Flag sparse classes."""
+    print(f"\n{'=' * 60}")
+    print("GOLD STANDARD CLASS DISTRIBUTION")
+    print(f"{'=' * 60}")
+
+    for dimension, valid_list in [("firm_type", FIRM_TYPES),
+                                   ("role_function", ROLE_FUNCTIONS),
+                                   ("programme_status", PROGRAMME_STATUSES)]:
+        counts = Counter(g[dimension] for g in gold_entries)
+        total = sum(counts.values())
+        print(f"\n  {dimension} (n={total}):")
+        for label in valid_list:
+            c = counts.get(label, 0)
+            pct = c / total * 100 if total > 0 else 0
+            flag = " ** SPARSE - per-class metrics unreliable" if 0 < c < 5 else ""
+            flag = " (absent)" if c == 0 else flag
+            print(f"    {label:<25s} {c:>4d}  ({pct:5.1f}%){flag}")
+
+
+# ---------------------------------------------------------------------------
+# 9. Unseen split descriptive statistics
+# ---------------------------------------------------------------------------
+
+def unseen_split_report(unseen_entries):
+    """Print descriptive stats for the entries NOT in the gold standard.
+
+    No accuracy metrics (no ground truth), but shows confidence distributions,
+    escalation rates, and LLM vs baseline agreement.
+    """
+    if not unseen_entries:
+        print("\n[evaluate] No unseen entries to report.")
+        return
+
+    n = len(unseen_entries)
+    print(f"\n{'=' * 60}")
+    print(f"UNSEEN SPLIT DESCRIPTIVE STATISTICS ({n} entries)")
+    print(f"{'=' * 60}")
+
+    # Escalation rate
+    escalated = sum(1 for r in unseen_entries if r.get("escalated") in (True, "True", "TRUE"))
+    print(f"\n  Escalation rate: {escalated}/{n} ({escalated/n*100:.1f}%)")
+
+    # Model distribution
+    models = Counter(r.get("model_used", "unknown") for r in unseen_entries)
+    print(f"  Model distribution: {dict(models)}")
+
+    # Confidence distributions per dimension
+    for dim in ["firm_type", "role_function", "programme_status"]:
+        conf_key = f"{dim}_confidence"
+        confs = [r.get(conf_key, 0.5) for r in unseen_entries]
+        print(f"\n  {dim} confidence (unseen):")
+        print(f"    mean={np.mean(confs):.3f}, median={np.median(confs):.3f}, "
+              f"min={np.min(confs):.3f}, max={np.max(confs):.3f}")
+
+        # Bucket distribution
+        for i in range(len(CALIBRATION_BINS) - 1):
+            lo, hi = CALIBRATION_BINS[i], CALIBRATION_BINS[i + 1]
+            if i < len(CALIBRATION_BINS) - 2:
+                count = sum(1 for c in confs if lo <= c < hi)
+            else:
+                count = sum(1 for c in confs if lo <= c <= hi)
+            print(f"    {lo:.1f}-{hi:.1f}: {count} ({count/n*100:.1f}%)")
+
+    # LLM vs baseline agreement
+    print(f"\n  LLM vs rule-based baseline agreement:")
+    for dim, baseline_key in [("firm_type", "baseline_firm_type"),
+                               ("role_function", "baseline_role_function"),
+                               ("programme_status", "baseline_programme_status")]:
+        agree = sum(1 for r in unseen_entries if r.get(dim) == r.get(baseline_key))
+        print(f"    {dim}: {agree}/{n} ({agree/n*100:.1f}%)")
+
+
+# ---------------------------------------------------------------------------
+# 10. Full evaluation runner
+# ---------------------------------------------------------------------------
+
+def run_full_evaluation(gold_path=GOLD_STANDARD_PATH,
+                        classified_path=CLASSIFIED_PATH):
     """Run complete evaluation: random baseline vs rule-based vs LLM.
 
-    Loads gold standard, generates predictions from each method, computes
-    metrics, saves figures to output/figures/. Handles missing gold standard
-    gracefully.
+    Loads gold standard xlsx (153 hand-labelled entries), loads classified
+    results xlsx (501 pipeline outputs), matches the 153 by (company_name,
+    programme_name), runs all metrics, and reports on the unseen 348.
     """
     print(f"\n{'=' * 60}")
     print("EVALUATION PIPELINE")
     print(f"{'=' * 60}")
 
-    # Load gold standard
-    gold_labels = load_gold_standard()
-    if gold_labels is None:
+    # --- Load gold standard ---
+    gold_entries = load_gold_standard(gold_path)
+    if gold_entries is None:
+        return
+    print(f"[evaluate] Loaded {len(gold_entries)} gold standard entries")
+
+    # --- Class distribution ---
+    print_class_distribution(gold_entries)
+
+    # --- Load classified results ---
+    classified = load_classified_results(classified_path)
+    if classified is None:
+        return
+    print(f"\n[evaluate] Loaded {len(classified)} classified results")
+
+    # --- Match ---
+    matched, unmatched, unseen = match_gold_to_classified(gold_entries, classified)
+    print(f"[evaluate] Matched: {len(matched)}, Unmatched gold: {len(unmatched)}, "
+          f"Unseen (no ground truth): {len(unseen)}")
+
+    if unmatched:
+        print("[evaluate] WARNING: unmatched gold standard entries:")
+        for g in unmatched:
+            print(f"  {g['company_name']} | {g['programme_name']}")
+
+    if len(matched) < 5:
+        print("[evaluate] Too few matched entries for evaluation.")
         return
 
-    # Load data to generate baseline predictions
-    df = pd.read_csv(data_path)
-    df = df.fillna("")
-    listings = df.to_dict(orient="records")
+    # --- Build parallel arrays for evaluation ---
+    gold_labels = [m[0] for m in matched]
+    llm_preds = [m[1] for m in matched]
 
-    # Match gold labels to listings by company_name
-    # (gold standard may only cover a subset of listings)
-    gold_companies = {g["company_name"] for g in gold_labels}
-    matched_listings = [l for l in listings if l.get("company_name", "") in gold_companies]
+    # Build listings for baseline generation (from gold standard entries)
+    listings = []
+    for g in gold_labels:
+        listings.append({
+            "company_name": g["company_name"],
+            "programme_name": g["programme_name"],
+            "opening_date": g.get("opening_date", ""),
+            "closing_date": g.get("closing_date", ""),
+            "latest_stage": "",
+        })
 
-    if len(matched_listings) < 5:
-        print(f"[evaluate] Only {len(matched_listings)} listings match gold standard. Need at least 5.")
-        return
+    # Compute class weights from gold standard for proportional random baseline
+    class_weights = {}
+    for dimension in ["firm_type", "role_function", "programme_status"]:
+        class_weights[dimension] = dict(Counter(g[dimension] for g in gold_labels))
 
-    print(f"[evaluate] Matched {len(matched_listings)} listings to gold standard labels")
+    # Generate baselines
+    random.seed(42)  # reproducible
+    random_preds = random_baseline(listings, class_weights=class_weights)
+    # Rule-based baseline: use predictions already in classified_listings.xlsx
+    # (these were generated by the same pipeline that produced the LLM results)
 
-    # Generate predictions
-    random_preds = random_baseline(matched_listings)
-    rule_preds = rule_based_baseline(matched_listings)
+    # --- Build methods for evaluation ---
+    # For rule-based, extract from the matched classified entries
+    rule_preds = []
+    for _, c in matched:
+        rule_preds.append({
+            "firm_type": c.get("baseline_firm_type", "UNKNOWN"),
+            "firm_type_confidence": c.get("baseline_firm_type_confidence", 0.0),
+            "role_function": c.get("baseline_role_function", "UNKNOWN"),
+            "role_function_confidence": 0.0,  # baseline doesn't have role conf in xlsx
+            "programme_status": c.get("baseline_programme_status", "UNKNOWN"),
+            "programme_status_confidence": 0.0,
+        })
 
-    # Build gold label lookup
-    gold_lookup = {g["company_name"]: g for g in gold_labels}
+    methods = [
+        ("Random", random_preds),
+        ("Rule-based", rule_preds),
+        ("LLM", [c for _, c in matched]),
+    ]
 
+    os.makedirs(FIGURES_DIR, exist_ok=True)
     summaries = []
 
-    for method_name, preds in [("Random", random_preds), ("Rule-based", rule_preds)]:
+    for method_name, preds_data in methods:
         print(f"\n{'=' * 60}")
         print(f"EVALUATION: {method_name}")
         print(f"{'=' * 60}")
@@ -335,17 +684,24 @@ def run_full_evaluation(data_path="data/sample_listings.csv",
         summary = {"method": method_name}
 
         for dimension in ["firm_type", "role_function", "programme_status"]:
-            y_true = [gold_lookup[l["company_name"]][dimension] for l in matched_listings]
-            y_pred = [p[dimension] for p in preds]
+            y_true = [g[dimension] for g in gold_labels]
+            y_pred = [p[dimension] for p in preds_data]
             conf_key = f"{dimension}_confidence"
-            confs = [p.get(conf_key, 0.5) for p in preds]
+            confs = [p.get(conf_key, 0.5) for p in preds_data]
+
+            # UNKNOWN is now included as a valid class for role_function
+            # (previously 23 UNKNOWN gold labels were excluded here)
 
             metrics = evaluate_classifier(y_pred, y_true, label=f"{method_name} - {dimension}")
             if metrics:
                 summary[f"{dimension}_macro_f1"] = metrics["macro_f1"]
                 summary[f"{dimension}_weighted_f1"] = metrics["weighted_f1"]
 
-            confusion_matrix_plot(y_pred, y_true, label=f"{method_name}_{dimension}")
+            cm = confusion_matrix_plot(y_pred, y_true, label=f"{method_name}_{dimension}")
+
+            # Error analysis (only for LLM and rule-based, not random)
+            if method_name != "Random" and cm is not None:
+                error_analysis(y_true, y_pred, dimension)
 
             cal = calibration_analysis(y_pred, y_true, confs, label=f"{method_name} - {dimension}")
             if cal:
@@ -355,11 +711,12 @@ def run_full_evaluation(data_path="data/sample_listings.csv",
 
         summaries.append(summary)
 
-    # Print comparison table
+    # --- Comparison table ---
     print(f"\n{'=' * 80}")
     print("COMPARISON TABLE")
     print(f"{'=' * 80}")
-    header = f"{'Method':<15} | {'Firm F1':>8} | {'Role F1':>8} | {'Status F1':>10} | {'Firm ECE':>9} | {'Role ECE':>9} | {'Status ECE':>11}"
+    header = (f"{'Method':<15} | {'Firm F1':>8} | {'Role F1':>8} | {'Status F1':>10} | "
+              f"{'Firm ECE':>9} | {'Role ECE':>9} | {'Status ECE':>11}")
     print(header)
     print("-" * len(header))
     for s in summaries:
@@ -374,4 +731,22 @@ def run_full_evaluation(data_path="data/sample_listings.csv",
         )
     print(f"{'=' * 80}")
 
+    # --- Unseen split ---
+    unseen_split_report(unseen)
+
     return summaries
+
+
+# ---------------------------------------------------------------------------
+# 11. CLI entry point
+# ---------------------------------------------------------------------------
+
+if __name__ == "__main__":
+    import argparse
+    parser = argparse.ArgumentParser(description="Run evaluation pipeline")
+    parser.add_argument("--gold", default=GOLD_STANDARD_PATH,
+                        help="Path to gold standard xlsx")
+    parser.add_argument("--classified", default=CLASSIFIED_PATH,
+                        help="Path to classified results xlsx")
+    args = parser.parse_args()
+    run_full_evaluation(args.gold, args.classified)

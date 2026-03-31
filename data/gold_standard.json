@@ -1,40 +1,1532 @@
-{
-    "_comment": "PLACEHOLDER: This file needs manual labelling before evaluation can run. Label each entry with the correct firm_type, role_function, and programme_status from the taxonomy enums. Aim for 30-50 labelled entries matching rows in sample_listings.csv.",
-    "labels": [
-        {
-            "company_name": "Goldman Sachs",
-            "programme_name": "2026 Summer Analyst Programme",
-            "firm_type": "BULGE_BRACKET",
-            "role_function": "INVESTMENT_BANKING",
-            "programme_status": "CLOSED"
-        },
-        {
-            "company_name": "Lazard",
-            "programme_name": "2026 Summer Internship",
-            "firm_type": "ELITE_BOUTIQUE",
-            "role_function": "INVESTMENT_BANKING",
-            "programme_status": "CLOSED"
-        },
-        {
-            "company_name": "Blackstone",
-            "programme_name": "2026 Summer Analyst",
-            "firm_type": "BUY_SIDE_PE",
-            "role_function": "INVESTMENT_BANKING",
-            "programme_status": "OPEN"
-        },
-        {
-            "company_name": "Citadel",
-            "programme_name": "2026 Summer Intern",
-            "firm_type": "HEDGE_FUND_TRADING",
-            "role_function": "MARKETS_TRADING",
-            "programme_status": "CLOSED"
-        },
-        {
-            "company_name": "Private Equity Insights",
-            "programme_name": "Global Internship Program",
-            "firm_type": "OTHER",
-            "role_function": "OTHER",
-            "programme_status": "UNKNOWN"
-        }
-    ]
-}
+[
+  {
+    "company_name": "Macquarie Group",
+    "programme": "2026 Summer Internship Programme",
+    "opening_date": "01 Sep 25",
+    "closing_date": "31 Oct 25",
+    "latest_stage": "",
+    "firm_type": "BULGE_BRACKET",
+    "programme_status": "CLOSED",
+    "role_function": "UNKNOWN"
+  },
+  {
+    "company_name": "Jefferies",
+    "programme": "2026 Summer Internship Programme",
+    "opening_date": "01 Sep 25",
+    "closing_date": "24 Nov 25",
+    "latest_stage": "Offers Out",
+    "firm_type": "MIDDLE_MARKET_IB",
+    "programme_status": "CLOSED",
+    "role_function": "UNKNOWN"
+  },
+  {
+    "company_name": "Nomura",
+    "programme": "2026 Summer Internship Programme",
+    "opening_date": "31 Aug 25",
+    "closing_date": "01 Dec 25",
+    "latest_stage": "Offers Out",
+    "firm_type": "BULGE_BRACKET",
+    "programme_status": "CLOSED",
+    "role_function": "UNKNOWN"
+  },
+  {
+    "company_name": "Citi",
+    "programme": "Summer Analyst 2026",
+    "opening_date": "06 Jan 26",
+    "closing_date": "",
+    "latest_stage": "Offers Out",
+    "firm_type": "BULGE_BRACKET",
+    "programme_status": "CLOSED",
+    "role_function": "UNKNOWN"
+  },
+  {
+    "company_name": "Barclays",
+    "programme": "Summer Internship Programme 2026",
+    "opening_date": "25 Aug 25",
+    "closing_date": "",
+    "latest_stage": "Offers Out",
+    "firm_type": "BULGE_BRACKET",
+    "programme_status": "CLOSED",
+    "role_function": "UNKNOWN"
+  },
+  {
+    "company_name": "Goldman Sachs",
+    "programme": "2026 Summer Analyst Programme",
+    "opening_date": "15 Aug 25",
+    "closing_date": "",
+    "latest_stage": "Offers Out",
+    "firm_type": "BULGE_BRACKET",
+    "programme_status": "CLOSED",
+    "role_function": "UNKNOWN"
+  },
+  {
+    "company_name": "Deutsche Bank",
+    "programme": "Internship Programme 2026",
+    "opening_date": "07 Sep 25",
+    "closing_date": "31 Oct 25",
+    "latest_stage": "Offers Out",
+    "firm_type": "BULGE_BRACKET",
+    "programme_status": "CLOSED",
+    "role_function": "UNKNOWN"
+  },
+  {
+    "company_name": "UBS",
+    "programme": "2026 Summer Intern Program",
+    "opening_date": "01 Sep 25",
+    "closing_date": "31 Oct 25",
+    "latest_stage": "Offers Out",
+    "firm_type": "BULGE_BRACKET",
+    "programme_status": "CLOSED",
+    "role_function": "UNKNOWN"
+  },
+  {
+    "company_name": "J.P. Morgan",
+    "programme": "2026 Summer Internship Program",
+    "opening_date": "31 Aug 25",
+    "closing_date": "02 Nov 25",
+    "latest_stage": "Offers Out",
+    "firm_type": "BULGE_BRACKET",
+    "programme_status": "CLOSED",
+    "role_function": "UNKNOWN"
+  },
+  {
+    "company_name": "Morgan Stanley",
+    "programme": "2026 Summer Analyst Programme",
+    "opening_date": "31 Aug 25",
+    "closing_date": "30 Nov 25",
+    "latest_stage": "Offers Out",
+    "firm_type": "BULGE_BRACKET",
+    "programme_status": "CLOSED",
+    "role_function": "UNKNOWN"
+  },
+  {
+    "company_name": "Bank of America",
+    "programme": "Summer 2026 Analyst Programme",
+    "opening_date": "30 Aug 25",
+    "closing_date": "03 Oct 25",
+    "latest_stage": "Offers Out",
+    "firm_type": "BULGE_BRACKET",
+    "programme_status": "CLOSED",
+    "role_function": "UNKNOWN"
+  },
+  {
+    "company_name": "RBC Capital Markets",
+    "programme": "2026 Summer Analyst",
+    "opening_date": "09 Sep 25",
+    "closing_date": "",
+    "latest_stage": "Offers Out",
+    "firm_type": "BULGE_BRACKET",
+    "programme_status": "CLOSED",
+    "role_function": "UNKNOWN"
+  },
+  {
+    "company_name": "National Bank of Canada",
+    "programme": "Intern",
+    "opening_date": "26 Nov 25",
+    "closing_date": "25 Nov 25",
+    "latest_stage": "",
+    "firm_type": "BULGE_BRACKET",
+    "programme_status": "CLOSED",
+    "role_function": "UNKNOWN"
+  },
+  {
+    "company_name": "Lloyds Banking Group",
+    "programme": "Summer Internship 2026",
+    "opening_date": "17 Nov 25",
+    "closing_date": "22 Dec 25",
+    "latest_stage": "",
+    "firm_type": "BULGE_BRACKET",
+    "programme_status": "CLOSED",
+    "role_function": "UNKNOWN"
+  },
+  {
+    "company_name": "BMO Capital Markets",
+    "programme": "2026 Global Markets Summer Analyst",
+    "opening_date": "10 Nov 25",
+    "closing_date": "24 Nov 25",
+    "latest_stage": "",
+    "firm_type": "BULGE_BRACKET",
+    "programme_status": "CLOSED",
+    "role_function": "MARKETS_TRADING"
+  },
+  {
+    "company_name": "CITIC CLSA",
+    "programme": "Internship Programme 2026",
+    "opening_date": "06 Nov 25",
+    "closing_date": "31 Dec 25",
+    "latest_stage": "",
+    "firm_type": "BULGE_BRACKET",
+    "programme_status": "CLOSED",
+    "role_function": "UNKNOWN"
+  },
+  {
+    "company_name": "Crédit Agricole",
+    "programme": "Summer Internship Programme 2026",
+    "opening_date": "03 Nov 25",
+    "closing_date": "27 Jan 26",
+    "latest_stage": "",
+    "firm_type": "BULGE_BRACKET",
+    "programme_status": "CLOSED",
+    "role_function": "UNKNOWN"
+  },
+  {
+    "company_name": "Scotiabank",
+    "programme": "2026 UK Summer Internship",
+    "opening_date": "15 Oct 25",
+    "closing_date": "27 Jan 26",
+    "latest_stage": "",
+    "firm_type": "BULGE_BRACKET",
+    "programme_status": "CLOSED",
+    "role_function": "UNKNOWN"
+  },
+  {
+    "company_name": "Guggenheim Partners",
+    "programme": "2026 Investment Banking Analyst Intern – Healthcare",
+    "opening_date": "06 Jan 26",
+    "closing_date": "",
+    "latest_stage": "",
+    "firm_type": "ELITE_BOUTIQUE",
+    "programme_status": "UNKNOWN",
+    "role_function": "INVESTMENT_BANKING"
+  },
+  {
+    "company_name": "Guggenheim Partners",
+    "programme": "2026 Investment Banking Analyst Intern",
+    "opening_date": "11 Sep 25",
+    "closing_date": "24 Nov 25",
+    "latest_stage": "",
+    "firm_type": "ELITE_BOUTIQUE",
+    "programme_status": "CLOSED",
+    "role_function": "INVESTMENT_BANKING"
+  },
+  {
+    "company_name": "Moelis & Co",
+    "programme": "2026 Summer Analyst, Equity Capital Markets",
+    "opening_date": "16 Jan 26",
+    "closing_date": "15 Feb 26",
+    "latest_stage": "",
+    "firm_type": "ELITE_BOUTIQUE",
+    "programme_status": "CLOSED",
+    "role_function": "INVESTMENT_BANKING"
+  },
+  {
+    "company_name": "Moelis & Co",
+    "programme": "2026 Summer Analyst, Private Capital Advisory",
+    "opening_date": "12 Jan 26",
+    "closing_date": "27 Jan 26",
+    "latest_stage": "",
+    "firm_type": "ELITE_BOUTIQUE",
+    "programme_status": "CLOSED",
+    "role_function": "INVESTMENT_BANKING"
+  },
+  {
+    "company_name": "Lazard",
+    "programme": "2026 Summer Internship",
+    "opening_date": "19 Sep 25",
+    "closing_date": "14 Oct 25",
+    "latest_stage": "Offers Out",
+    "firm_type": "ELITE_BOUTIQUE",
+    "programme_status": "CLOSED",
+    "role_function": "INVESTMENT_BANKING"
+  },
+  {
+    "company_name": "PJT Partners",
+    "programme": "2026 Summer Intern Analyst",
+    "opening_date": "31 Aug 25",
+    "closing_date": "20 Oct 25",
+    "latest_stage": "Offers Out",
+    "firm_type": "ELITE_BOUTIQUE",
+    "programme_status": "CLOSED",
+    "role_function": "INVESTMENT_BANKING"
+  },
+  {
+    "company_name": "Centerview Partners",
+    "programme": "2026 Summer Internship (see notes)",
+    "opening_date": "26 Aug 25",
+    "closing_date": "23 Sep 25",
+    "latest_stage": "Offers Out",
+    "firm_type": "ELITE_BOUTIQUE",
+    "programme_status": "CLOSED",
+    "role_function": "INVESTMENT_BANKING"
+  },
+  {
+    "company_name": "Greenhill",
+    "programme": "2026 Summer Internship",
+    "opening_date": "26 Aug 25",
+    "closing_date": "13 Nov 25",
+    "latest_stage": "First Round",
+    "firm_type": "ELITE_BOUTIQUE",
+    "programme_status": "CLOSED",
+    "role_function": "INVESTMENT_BANKING"
+  },
+  {
+    "company_name": "Perella Weinberg Partners",
+    "programme": "2026 Advisory Summer Analyst Programme",
+    "opening_date": "23 Aug 25",
+    "closing_date": "29 Sep 25",
+    "latest_stage": "Offers Out",
+    "firm_type": "ELITE_BOUTIQUE",
+    "programme_status": "CLOSED",
+    "role_function": "INVESTMENT_BANKING"
+  },
+  {
+    "company_name": "Qatalyst Partners",
+    "programme": "2026 M&A Advisory Summer Internship",
+    "opening_date": "18 Aug 25",
+    "closing_date": "12 Oct 25",
+    "latest_stage": "AC",
+    "firm_type": "ELITE_BOUTIQUE",
+    "programme_status": "CLOSED",
+    "role_function": "INVESTMENT_BANKING"
+  },
+  {
+    "company_name": "Berenberg",
+    "programme": "Summer Internship 2026",
+    "opening_date": "16 Jan 26",
+    "closing_date": "",
+    "latest_stage": "",
+    "firm_type": "MIDDLE_MARKET_IB",
+    "programme_status": "UNKNOWN",
+    "role_function": "UNKNOWN"
+  },
+  {
+    "company_name": "Rede Partners",
+    "programme": "Spring into Rede Insight Programme 2026",
+    "opening_date": "16 Dec 25",
+    "closing_date": "27 Jan 26",
+    "latest_stage": "",
+    "firm_type": "OTHER",
+    "programme_status": "CLOSED",
+    "role_function": "OTHER"
+  },
+  {
+    "company_name": "GP Bullhound",
+    "programme": "Future Stars - Work Experience & Insight Programme",
+    "opening_date": "18 Nov 25",
+    "closing_date": "09 Jan 26",
+    "latest_stage": "",
+    "firm_type": "MIDDLE_MARKET_IB",
+    "programme_status": "CLOSED",
+    "role_function": "OTHER"
+  },
+  {
+    "company_name": "Flowdesk",
+    "programme": "Sales Intern EMEA (F/M/D)",
+    "opening_date": "05 Nov 25",
+    "closing_date": "24 Nov 25",
+    "latest_stage": "",
+    "firm_type": "QUANT_PROP",
+    "programme_status": "CLOSED",
+    "role_function": "MARKETS_TRADING"
+  },
+  {
+    "company_name": "Investec",
+    "programme": "Summer Internship 2026",
+    "opening_date": "12 Oct 25",
+    "closing_date": "13 Oct 25",
+    "latest_stage": "Offers Out",
+    "firm_type": "MIDDLE_MARKET_IB",
+    "programme_status": "CLOSED",
+    "role_function": "UNKNOWN"
+  },
+  {
+    "company_name": "Howden",
+    "programme": "Investment Banking Summer Analyst",
+    "opening_date": "11 Oct 25",
+    "closing_date": "10 Nov 25",
+    "latest_stage": "AC",
+    "firm_type": "OTHER",
+    "programme_status": "CLOSED",
+    "role_function": "INVESTMENT_BANKING"
+  },
+  {
+    "company_name": "Rede Partners",
+    "programme": "2026 Summer Intern Programme",
+    "opening_date": "08 Sep 25",
+    "closing_date": "13 Oct 25",
+    "latest_stage": "First Round",
+    "firm_type": "OTHER",
+    "programme_status": "CLOSED",
+    "role_function": "OTHER"
+  },
+  {
+    "company_name": "Eastdil Secured",
+    "programme": "2026 Summer Internship",
+    "opening_date": "01 Sep 25",
+    "closing_date": "22 Oct 25",
+    "latest_stage": "HireVue",
+    "firm_type": "ELITE_BOUTIQUE",
+    "programme_status": "CLOSED",
+    "role_function": "INVESTMENT_BANKING"
+  },
+  {
+    "company_name": "Campbell Lutyens",
+    "programme": "Summer Analysts 2026",
+    "opening_date": "21 Aug 25",
+    "closing_date": "24 Nov 25",
+    "latest_stage": "First Round",
+    "firm_type": "OTHER",
+    "programme_status": "CLOSED",
+    "role_function": "OTHER"
+  },
+  {
+    "company_name": "Howden",
+    "programme": "Howden Re Summer Internship",
+    "opening_date": "13 Oct 25",
+    "closing_date": "10 Nov 25",
+    "latest_stage": "",
+    "firm_type": "MIDDLE_MARKET_IB",
+    "programme_status": "CLOSED",
+    "role_function": "OTHER"
+  },
+  {
+    "company_name": "Piper Sandler",
+    "programme": "2026 Summer Analyst Programme",
+    "opening_date": "06 Oct 25",
+    "closing_date": "06 Oct 25",
+    "latest_stage": "Offers Out",
+    "firm_type": "MIDDLE_MARKET_IB",
+    "programme_status": "CLOSED",
+    "role_function": "INVESTMENT_BANKING"
+  },
+  {
+    "company_name": "Ardea Partners",
+    "programme": "2026 Summer Analyst Programme",
+    "opening_date": "03 Sep 25",
+    "closing_date": "13 Oct 25",
+    "latest_stage": "First Round",
+    "firm_type": "MIDDLE_MARKET_IB",
+    "programme_status": "CLOSED",
+    "role_function": "INVESTMENT_BANKING"
+  },
+  {
+    "company_name": "Raine Group",
+    "programme": "2026 Summer Analyst",
+    "opening_date": "25 Aug 25",
+    "closing_date": "13 Oct 25",
+    "latest_stage": "First Round",
+    "firm_type": "MIDDLE_MARKET_IB",
+    "programme_status": "CLOSED",
+    "role_function": "INVESTMENT_BANKING"
+  },
+  {
+    "company_name": "FT Partners",
+    "programme": "2026 Summer Analyst Programme",
+    "opening_date": "",
+    "closing_date": "",
+    "latest_stage": "",
+    "firm_type": "MIDDLE_MARKET_IB",
+    "programme_status": "UNKNOWN",
+    "role_function": "INVESTMENT_BANKING"
+  },
+  {
+    "company_name": "Handelsbanken",
+    "programme": "Summer Internship 2026",
+    "opening_date": "31 Jan 26",
+    "closing_date": "11 Feb 26",
+    "latest_stage": "",
+    "firm_type": "MIDDLE_MARKET_IB",
+    "programme_status": "CLOSED",
+    "role_function": "UNKNOWN"
+  },
+  {
+    "company_name": "BTG Pactual",
+    "programme": "Internship | Special Situations",
+    "opening_date": "08 Jan 26",
+    "closing_date": "",
+    "latest_stage": "",
+    "firm_type": "MIDDLE_MARKET_IB",
+    "programme_status": "UNKNOWN",
+    "role_function": "OTHER"
+  },
+  {
+    "company_name": "Gneiss Energy",
+    "programme": "Summer Internship 2026",
+    "opening_date": "22 Dec 25",
+    "closing_date": "",
+    "latest_stage": "",
+    "firm_type": "MIDDLE_MARKET_IB",
+    "programme_status": "UNKNOWN",
+    "role_function": "INVESTMENT_BANKING"
+  },
+  {
+    "company_name": "Loizou & Co",
+    "programme": "Financial Advisory Internship",
+    "opening_date": "27 Nov 25",
+    "closing_date": "",
+    "latest_stage": "",
+    "firm_type": "MIDDLE_MARKET_IB",
+    "programme_status": "UNKNOWN",
+    "role_function": "INVESTMENT_BANKING"
+  },
+  {
+    "company_name": "Redington",
+    "programme": "2026 Summer Internship",
+    "opening_date": "",
+    "closing_date": "",
+    "latest_stage": "",
+    "firm_type": "CONSULTING",
+    "programme_status": "UNKNOWN",
+    "role_function": "CONSULTING"
+  },
+  {
+    "company_name": "Newton",
+    "programme": "Summer Academy 2025/6",
+    "opening_date": "24 Nov 25",
+    "closing_date": "05 Dec 25",
+    "latest_stage": "",
+    "firm_type": "ASSET_MANAGEMENT",
+    "programme_status": "CLOSED",
+    "role_function": "OTHER"
+  },
+  {
+    "company_name": "Brown Advisory",
+    "programme": "Summer Analyst",
+    "opening_date": "",
+    "closing_date": "",
+    "latest_stage": "",
+    "firm_type": "ASSET_MANAGEMENT",
+    "programme_status": "UNKNOWN",
+    "role_function": "OTHER"
+  },
+  {
+    "company_name": "Orbis",
+    "programme": "UK Business Internship",
+    "opening_date": "15 Jan 26",
+    "closing_date": "21 Feb 26",
+    "latest_stage": "",
+    "firm_type": "ASSET_MANAGEMENT",
+    "programme_status": "CLOSED",
+    "role_function": "OTHER"
+  },
+  {
+    "company_name": "Neuberger Berman",
+    "programme": "Summer Intern 2026",
+    "opening_date": "16 Jan 26",
+    "closing_date": "27 Jan 26",
+    "latest_stage": "",
+    "firm_type": "ASSET_MANAGEMENT",
+    "programme_status": "CLOSED",
+    "role_function": "OTHER"
+  },
+  {
+    "company_name": "Orbis",
+    "programme": "Investment Analyst Internship 2025-2026",
+    "opening_date": "09 Sep 25",
+    "closing_date": "14 Oct 25",
+    "latest_stage": "",
+    "firm_type": "ASSET_MANAGEMENT",
+    "programme_status": "CLOSED",
+    "role_function": "OTHER"
+  },
+  {
+    "company_name": "Pacific Asset Management",
+    "programme": "Summer Internships 2026",
+    "opening_date": "",
+    "closing_date": "",
+    "latest_stage": "",
+    "firm_type": "ASSET_MANAGEMENT",
+    "programme_status": "UNKNOWN",
+    "role_function": "OTHER"
+  },
+  {
+    "company_name": "Wellington Management",
+    "programme": "Early Career Investor - 2026 Summer Internship",
+    "opening_date": "",
+    "closing_date": "",
+    "latest_stage": "",
+    "firm_type": "ASSET_MANAGEMENT",
+    "programme_status": "UNKNOWN",
+    "role_function": "OTHER"
+  },
+  {
+    "company_name": "Dimensional Fund Advisors",
+    "programme": "Asset Management Internship - Summer 2026",
+    "opening_date": "24 Jan 26",
+    "closing_date": "",
+    "latest_stage": "",
+    "firm_type": "ASSET_MANAGEMENT",
+    "programme_status": "UNKNOWN",
+    "role_function": "OTHER"
+  },
+  {
+    "company_name": "Atlanta Wealth",
+    "programme": "Equity Analyst Internship, Asset Management",
+    "opening_date": "16 Jan 26",
+    "closing_date": "",
+    "latest_stage": "",
+    "firm_type": "ASSET_MANAGEMENT",
+    "programme_status": "UNKNOWN",
+    "role_function": "OTHER"
+  },
+  {
+    "company_name": "PIMCO",
+    "programme": "2026 Summer Internship - Product Analyst",
+    "opening_date": "01 Sep 25",
+    "closing_date": "",
+    "latest_stage": "",
+    "firm_type": "ASSET_MANAGEMENT",
+    "programme_status": "UNKNOWN",
+    "role_function": "OTHER"
+  },
+  {
+    "company_name": "MFS",
+    "programme": "Equity Research Analyst Intern",
+    "opening_date": "15 Jan 26",
+    "closing_date": "27 Jan 26",
+    "latest_stage": "",
+    "firm_type": "ASSET_MANAGEMENT",
+    "programme_status": "CLOSED",
+    "role_function": "RESEARCH"
+  },
+  {
+    "company_name": "PGIM",
+    "programme": "Investment Analyst Intern",
+    "opening_date": "18 Dec 25",
+    "closing_date": "27 Jan 26",
+    "latest_stage": "",
+    "firm_type": "ASSET_MANAGEMENT",
+    "programme_status": "CLOSED",
+    "role_function": "OTHER"
+  },
+  {
+    "company_name": "M&G",
+    "programme": "Summer Internship",
+    "opening_date": "10 Dec 25",
+    "closing_date": "27 Jan 26",
+    "latest_stage": "",
+    "firm_type": "ASSET_MANAGEMENT",
+    "programme_status": "CLOSED",
+    "role_function": "OTHER"
+  },
+  {
+    "company_name": "Capital Group",
+    "programme": "ESG Summer Associate - Europe (2026)",
+    "opening_date": "08 Dec 25",
+    "closing_date": "27 Jan 26",
+    "latest_stage": "",
+    "firm_type": "ASSET_MANAGEMENT",
+    "programme_status": "CLOSED",
+    "role_function": "OTHER"
+  },
+  {
+    "company_name": "Nuveen",
+    "programme": "Summer Internship 2026",
+    "opening_date": "02 Dec 25",
+    "closing_date": "19 Dec 25",
+    "latest_stage": "",
+    "firm_type": "ASSET_MANAGEMENT",
+    "programme_status": "CLOSED",
+    "role_function": "OTHER"
+  },
+  {
+    "company_name": "D.E. Shaw",
+    "programme": "Trader/Analyst Intern (London) - Summer 2026",
+    "opening_date": "15 Jun 25",
+    "closing_date": "21 Jan 26",
+    "latest_stage": "Offers Out",
+    "firm_type": "BUY_SIDE_PE",
+    "programme_status": "CLOSED",
+    "role_function": "MARKETS_TRADING"
+  },
+  {
+    "company_name": "Arena Investors",
+    "programme": "2026 Summer Investment Analyst",
+    "opening_date": "28 Nov 25",
+    "closing_date": "",
+    "latest_stage": "",
+    "firm_type": "BUY_SIDE_PE",
+    "programme_status": "UNKNOWN",
+    "role_function": "OTHER"
+  },
+  {
+    "company_name": "Welltower",
+    "programme": "2026 Summer Analyst - Real Estate Investments",
+    "opening_date": "11 Nov 25",
+    "closing_date": "",
+    "latest_stage": "",
+    "firm_type": "BUY_SIDE_PE",
+    "programme_status": "UNKNOWN",
+    "role_function": "OTHER"
+  },
+  {
+    "company_name": "Future Planet Capital",
+    "programme": "Venture Capital & Investment Micro-Internship - March 2026",
+    "opening_date": "20 Jan 26",
+    "closing_date": "02 Feb 26",
+    "latest_stage": "",
+    "firm_type": "BUY_SIDE_PE",
+    "programme_status": "CLOSED",
+    "role_function": "OTHER"
+  },
+  {
+    "company_name": "BGF",
+    "programme": "2026 Summer Internship Programme",
+    "opening_date": "19 Dec 25",
+    "closing_date": "27 Jan 26",
+    "latest_stage": "",
+    "firm_type": "BUY_SIDE_PE",
+    "programme_status": "CLOSED",
+    "role_function": "OTHER"
+  },
+  {
+    "company_name": "Burford Capital",
+    "programme": "Summer Analyst Internship",
+    "opening_date": "03 Dec 25",
+    "closing_date": "27 Jan 26",
+    "latest_stage": "",
+    "firm_type": "BUY_SIDE_PE",
+    "programme_status": "CLOSED",
+    "role_function": "OTHER"
+  },
+  {
+    "company_name": "Future Planet Capital",
+    "programme": "Venture Capital Micro-Internship - December 2025",
+    "opening_date": "05 Oct 25",
+    "closing_date": "02 Nov 25",
+    "latest_stage": "",
+    "firm_type": "BUY_SIDE_PE",
+    "programme_status": "CLOSED",
+    "role_function": "OTHER"
+  },
+  {
+    "company_name": "D.E. Shaw",
+    "programme": "Trader/Analyst Intern (London) - Summer 2026",
+    "opening_date": "15 Jun 25",
+    "closing_date": "21 Jan 26",
+    "latest_stage": "Offers Out",
+    "firm_type": "BUY_SIDE_PE",
+    "programme_status": "CLOSED",
+    "role_function": "MARKETS_TRADING"
+  },
+  {
+    "company_name": "Blenheim Chalcot",
+    "programme": "Internship Programme 2026",
+    "opening_date": "",
+    "closing_date": "",
+    "latest_stage": "",
+    "firm_type": "BUY_SIDE_PE",
+    "programme_status": "UNKNOWN",
+    "role_function": "OTHER"
+  },
+  {
+    "company_name": "D.E. Shaw",
+    "programme": "D. E. Shaw Investment Management (DESIM) Intern – Summer 2026",
+    "opening_date": "21 Nov 25",
+    "closing_date": "27 Jan 26",
+    "latest_stage": "",
+    "firm_type": "BUY_SIDE_PE",
+    "programme_status": "CLOSED",
+    "role_function": "OTHER"
+  },
+  {
+    "company_name": "Alvine Capital",
+    "programme": "Summer Intern - London, UK",
+    "opening_date": "26 Jan 26",
+    "closing_date": "27 Jan 26",
+    "latest_stage": "",
+    "firm_type": "BUY_SIDE_PE",
+    "programme_status": "CLOSED",
+    "role_function": "OTHER"
+  },
+  {
+    "company_name": "Compound Equity Group",
+    "programme": "Junior Investor (Summer 2026 Internship)",
+    "opening_date": "07 Jan 26",
+    "closing_date": "27 Jan 26",
+    "latest_stage": "",
+    "firm_type": "BUY_SIDE_PE",
+    "programme_status": "CLOSED",
+    "role_function": "OTHER"
+  },
+  {
+    "company_name": "CD&R",
+    "programme": "Private Equity Spring Insight 2026",
+    "opening_date": "16 Dec 25",
+    "closing_date": "27 Jan 26",
+    "latest_stage": "",
+    "firm_type": "BUY_SIDE_PE",
+    "programme_status": "CLOSED",
+    "role_function": "OTHER"
+  },
+  {
+    "company_name": "Equitix",
+    "programme": "Internship 2026",
+    "opening_date": "28 Nov 25",
+    "closing_date": "27 Jan 26",
+    "latest_stage": "",
+    "firm_type": "BUY_SIDE_PE",
+    "programme_status": "CLOSED",
+    "role_function": "OTHER"
+  },
+  {
+    "company_name": "Hayfin Capital Management",
+    "programme": "Summer Intern 2026",
+    "opening_date": "14 Nov 25",
+    "closing_date": "27 Jan 26",
+    "latest_stage": "",
+    "firm_type": "BUY_SIDE_PE",
+    "programme_status": "CLOSED",
+    "role_function": "OTHER"
+  },
+  {
+    "company_name": "Ethical Capital Partners",
+    "programme": "Investment Intern",
+    "opening_date": "13 Nov 25",
+    "closing_date": "16 Nov 25",
+    "latest_stage": "",
+    "firm_type": "BUY_SIDE_PE",
+    "programme_status": "CLOSED",
+    "role_function": "OTHER"
+  },
+  {
+    "company_name": "Capstone",
+    "programme": "2026 Summer Internship",
+    "opening_date": "01 Sep 25",
+    "closing_date": "",
+    "latest_stage": "Offers Out",
+    "firm_type": "HEDGE_FUND",
+    "programme_status": "CLOSED",
+    "role_function": "QUANT"
+  },
+  {
+    "company_name": "Capstone",
+    "programme": "2026 Summer Policy & Investment Internship - PATHWAY",
+    "opening_date": "30 Oct 25",
+    "closing_date": "27 Jan 26",
+    "latest_stage": "",
+    "firm_type": "HEDGE_FUND",
+    "programme_status": "CLOSED",
+    "role_function": "OTHER"
+  },
+  {
+    "company_name": "Sona Asset Management",
+    "programme": "Summer Intern Programme",
+    "opening_date": "19 Dec 25",
+    "closing_date": "",
+    "latest_stage": "",
+    "firm_type": "HEDGE_FUND",
+    "programme_status": "UNKNOWN",
+    "role_function": "OTHER"
+  },
+  {
+    "company_name": "Verition Fund Management",
+    "programme": "2026 Summer Internship",
+    "opening_date": "04 Sep 25",
+    "closing_date": "",
+    "latest_stage": "",
+    "firm_type": "HEDGE_FUND",
+    "programme_status": "UNKNOWN",
+    "role_function": "OTHER"
+  },
+  {
+    "company_name": "Balyasny Asset Management",
+    "programme": "Quantitative Analyst – Macro & Commodities (Summer Internship)",
+    "opening_date": "19 Aug 25",
+    "closing_date": "",
+    "latest_stage": "Offers Out",
+    "firm_type": "HEDGE_FUND",
+    "programme_status": "CLOSED",
+    "role_function": "QUANT"
+  },
+  {
+    "company_name": "LMR Partners",
+    "programme": "Investments Summer Internship 2026",
+    "opening_date": "30 Dec 25",
+    "closing_date": "27 Jan 26",
+    "latest_stage": "",
+    "firm_type": "HEDGE_FUND",
+    "programme_status": "CLOSED",
+    "role_function": "OTHER"
+  },
+  {
+    "company_name": "Caxton Associates",
+    "programme": "2026 Summer Internship Programme",
+    "opening_date": "16 Dec 25",
+    "closing_date": "31 Jan 26",
+    "latest_stage": "",
+    "firm_type": "HEDGE_FUND",
+    "programme_status": "CLOSED",
+    "role_function": "MARKETS_TRADING"
+  },
+  {
+    "company_name": "Rokos Capital Management",
+    "programme": "RCM Internship Programme 2026",
+    "opening_date": "01 Nov 25",
+    "closing_date": "27 Jan 26",
+    "latest_stage": "",
+    "firm_type": "HEDGE_FUND",
+    "programme_status": "CLOSED",
+    "role_function": "MARKETS_TRADING"
+  },
+  {
+    "company_name": "ExodusPoint",
+    "programme": "Fixed Income Internship - Summer 2026",
+    "opening_date": "23 Oct 25",
+    "closing_date": "27 Jan 26",
+    "latest_stage": "",
+    "firm_type": "HEDGE_FUND",
+    "programme_status": "CLOSED",
+    "role_function": "MARKETS_TRADING"
+  },
+  {
+    "company_name": "Brevan Howard",
+    "programme": "Summer Internship Programme 2026",
+    "opening_date": "17 Sep 25",
+    "closing_date": "27 Jan 26",
+    "latest_stage": "",
+    "firm_type": "HEDGE_FUND",
+    "programme_status": "CLOSED",
+    "role_function": "MARKETS_TRADING"
+  },
+  {
+    "company_name": "Schonfeld",
+    "programme": "2026 Summer Intern",
+    "opening_date": "13 Sep 25",
+    "closing_date": "27 Jan 26",
+    "latest_stage": "",
+    "firm_type": "HEDGE_FUND",
+    "programme_status": "CLOSED",
+    "role_function": "UNKNOWN"
+  },
+  {
+    "company_name": "Man Group",
+    "programme": "2026 Summer Intern Programme",
+    "opening_date": "11 Sep 25",
+    "closing_date": "23 Oct 25",
+    "latest_stage": "Offers Out",
+    "firm_type": "HEDGE_FUND",
+    "programme_status": "CLOSED",
+    "role_function": "UNKNOWN"
+  },
+  {
+    "company_name": "Millennium Management",
+    "programme": "Summer Intern Programme 2026",
+    "opening_date": "03 Aug 25",
+    "closing_date": "27 Jan 26",
+    "latest_stage": "First Round",
+    "firm_type": "HEDGE_FUND",
+    "programme_status": "CLOSED",
+    "role_function": "UNKNOWN"
+  },
+  {
+    "company_name": "Citadel",
+    "programme": "International Equities Associate – Intern",
+    "opening_date": "29 May 25",
+    "closing_date": "27 Jan 26",
+    "latest_stage": "Offers Out",
+    "firm_type": "HEDGE_FUND",
+    "programme_status": "CLOSED",
+    "role_function": "MARKETS_TRADING"
+  },
+  {
+    "company_name": "Capula Investment Management",
+    "programme": "Trading & Research Summer Internship 2026",
+    "opening_date": "11 Apr 25",
+    "closing_date": "27 Jan 26",
+    "latest_stage": "First Round",
+    "firm_type": "HEDGE_FUND",
+    "programme_status": "CLOSED",
+    "role_function": "MARKETS_TRADING"
+  },
+  {
+    "company_name": "Ripple",
+    "programme": "Quantitative Trading Intern (Summer 2026)",
+    "opening_date": "12 Jan 26",
+    "closing_date": "",
+    "latest_stage": "",
+    "firm_type": "QUANT_PROP",
+    "programme_status": "UNKNOWN",
+    "role_function": "QUANT"
+  },
+  {
+    "company_name": "G-Research",
+    "programme": "Internship in Quantitative Research",
+    "opening_date": "22 Aug 25",
+    "closing_date": "",
+    "latest_stage": "",
+    "firm_type": "QUANT_PROP",
+    "programme_status": "UNKNOWN",
+    "role_function": "QUANT"
+  },
+  {
+    "company_name": "Aspect Capital",
+    "programme": "Quantitative Research Summer Intern 2026",
+    "opening_date": "13 Nov 25",
+    "closing_date": "27 Jan 26",
+    "latest_stage": "",
+    "firm_type": "QUANT_PROP",
+    "programme_status": "CLOSED",
+    "role_function": "QUANT"
+  },
+  {
+    "company_name": "Two Sigma",
+    "programme": "Quantitative Researcher - Internship",
+    "opening_date": "",
+    "closing_date": "",
+    "latest_stage": "",
+    "firm_type": "QUANT_PROP",
+    "programme_status": "UNKNOWN",
+    "role_function": "QUANT"
+  },
+  {
+    "company_name": "Wincent",
+    "programme": "Quant Research/Trading Internship - Summer 2026",
+    "opening_date": "21 Sep 25",
+    "closing_date": "",
+    "latest_stage": "",
+    "firm_type": "QUANT_PROP",
+    "programme_status": "UNKNOWN",
+    "role_function": "QUANT"
+  },
+  {
+    "company_name": "Squarepoint Capital",
+    "programme": "Intern Quant Researcher",
+    "opening_date": "03 Jul 25",
+    "closing_date": "27 Jan 26",
+    "latest_stage": "",
+    "firm_type": "QUANT_PROP",
+    "programme_status": "CLOSED",
+    "role_function": "QUANT"
+  },
+  {
+    "company_name": "Citadel Securities",
+    "programme": "EMEA Quant Invitational",
+    "opening_date": "23 Jan 26",
+    "closing_date": "06 Mar 26",
+    "latest_stage": "",
+    "firm_type": "QUANT_PROP",
+    "programme_status": "CLOSED",
+    "role_function": "QUANT"
+  },
+  {
+    "company_name": "Teza Technologies",
+    "programme": "2026 Quantitative Research Internship",
+    "opening_date": "20 Jan 26",
+    "closing_date": "14 Apr 26",
+    "latest_stage": "",
+    "firm_type": "QUANT_PROP",
+    "programme_status": "OPEN",
+    "role_function": "QUANT"
+  },
+  {
+    "company_name": "Da Vinci Trading",
+    "programme": "Quant Trading Intern (May 2027)",
+    "opening_date": "16 Jan 26",
+    "closing_date": "",
+    "latest_stage": "",
+    "firm_type": "QUANT_PROP",
+    "programme_status": "UNKNOWN",
+    "role_function": "QUANT"
+  },
+  {
+    "company_name": "IMC Trading",
+    "programme": "Women in Trading",
+    "opening_date": "16 Jan 26",
+    "closing_date": "13 Mar 26",
+    "latest_stage": "",
+    "firm_type": "QUANT_PROP",
+    "programme_status": "CLOSED",
+    "role_function": "MARKETS_TRADING"
+  },
+  {
+    "company_name": "SilverTide",
+    "programme": "Sales Summer Analyst",
+    "opening_date": "04 Dec 25",
+    "closing_date": "",
+    "latest_stage": "",
+    "firm_type": "QUANT_PROP",
+    "programme_status": "UNKNOWN",
+    "role_function": "MARKETS_TRADING"
+  },
+  {
+    "company_name": "Bastion Trading",
+    "programme": "Trading & Quant Summer Internship 2026",
+    "opening_date": "06 Oct 25",
+    "closing_date": "",
+    "latest_stage": "AC",
+    "firm_type": "QUANT_PROP",
+    "programme_status": "CLOSED",
+    "role_function": "QUANT"
+  },
+  {
+    "company_name": "Wincent",
+    "programme": "Quant Research/Trading Internship - Summer 2026",
+    "opening_date": "21 Sep 25",
+    "closing_date": "",
+    "latest_stage": "",
+    "firm_type": "QUANT_PROP",
+    "programme_status": "UNKNOWN",
+    "role_function": "QUANT"
+  },
+  {
+    "company_name": "Qube RT",
+    "programme": "2026 - Internship, Quantitative Research/Trading",
+    "opening_date": "28 Aug 25",
+    "closing_date": "",
+    "latest_stage": "Offers Out",
+    "firm_type": "QUANT_PROP",
+    "programme_status": "CLOSED",
+    "role_function": "QUANT"
+  },
+  {
+    "company_name": "Aquatic Capital Management",
+    "programme": "Quantitative Researcher, Intern (Summer 2026)",
+    "opening_date": "26 Aug 25",
+    "closing_date": "",
+    "latest_stage": "",
+    "firm_type": "QUANT_PROP",
+    "programme_status": "UNKNOWN",
+    "role_function": "QUANT"
+  },
+  {
+    "company_name": "BDO Global",
+    "programme": "2026 Summer Internship Programme",
+    "opening_date": "28 Jan 26",
+    "closing_date": "",
+    "latest_stage": "Offers Out",
+    "firm_type": "ACCOUNTING",
+    "programme_status": "CLOSED",
+    "role_function": "OTHER"
+  },
+  {
+    "company_name": "BDO Global",
+    "programme": "Black Heritage Insight Programme - 2026",
+    "opening_date": "",
+    "closing_date": "",
+    "latest_stage": "",
+    "firm_type": "ACCOUNTING",
+    "programme_status": "UNKNOWN",
+    "role_function": "OTHER"
+  },
+  {
+    "company_name": "Grant Thornton",
+    "programme": "Internship Programme (Summer 2026)",
+    "opening_date": "01 Sep 25",
+    "closing_date": "27 Jan 26",
+    "latest_stage": "",
+    "firm_type": "ACCOUNTING",
+    "programme_status": "CLOSED",
+    "role_function": "OTHER"
+  },
+  {
+    "company_name": "KPMG",
+    "programme": "Insight Penultimate Year Talent",
+    "opening_date": "14 Jan 26",
+    "closing_date": "",
+    "latest_stage": "",
+    "firm_type": "ACCOUNTING",
+    "programme_status": "UNKNOWN",
+    "role_function": "OTHER"
+  },
+  {
+    "company_name": "EY",
+    "programme": "2026 Summer Internship",
+    "opening_date": "17 Sep 25",
+    "closing_date": "",
+    "latest_stage": "Offers Out",
+    "firm_type": "ACCOUNTING",
+    "programme_status": "CLOSED",
+    "role_function": "OTHER"
+  },
+  {
+    "company_name": "PwC",
+    "programme": "Summer Internship 2026",
+    "opening_date": "30 Sep 25",
+    "closing_date": "27 Jan 26",
+    "latest_stage": "Offers Out",
+    "firm_type": "ACCOUNTING",
+    "programme_status": "CLOSED",
+    "role_function": "OTHER"
+  },
+  {
+    "company_name": "Deloitte",
+    "programme": "Summer Vacation Scheme",
+    "opening_date": "21 Sep 25",
+    "closing_date": "27 Oct 25",
+    "latest_stage": "Offers Out",
+    "firm_type": "ACCOUNTING",
+    "programme_status": "CLOSED",
+    "role_function": "OTHER"
+  },
+  {
+    "company_name": "KPMG",
+    "programme": "Vacation Audit - ACA",
+    "opening_date": "",
+    "closing_date": "",
+    "latest_stage": "",
+    "firm_type": "ACCOUNTING",
+    "programme_status": "UNKNOWN",
+    "role_function": "RISK_COMPLIANCE"
+  },
+  {
+    "company_name": "AAB Group",
+    "programme": "2026 Internship Opportunities",
+    "opening_date": "08 Oct 25",
+    "closing_date": "04 Nov 25",
+    "latest_stage": "",
+    "firm_type": "ACCOUNTING",
+    "programme_status": "CLOSED",
+    "role_function": "OTHER"
+  },
+  {
+    "company_name": "Saffery",
+    "programme": "Summer Internship - June 2026",
+    "opening_date": "02 Feb 26",
+    "closing_date": "",
+    "latest_stage": "Offers Out",
+    "firm_type": "ACCOUNTING",
+    "programme_status": "CLOSED",
+    "role_function": "OTHER"
+  },
+  {
+    "company_name": "CT: Accountants Advisers",
+    "programme": "Summer Placement Programme 2026",
+    "opening_date": "30 Jan 26",
+    "closing_date": "",
+    "latest_stage": "",
+    "firm_type": "ACCOUNTING",
+    "programme_status": "UNKNOWN",
+    "role_function": "OTHER"
+  },
+  {
+    "company_name": "RSM",
+    "programme": "Internship 2026",
+    "opening_date": "29 Jan 26",
+    "closing_date": "",
+    "latest_stage": "",
+    "firm_type": "ACCOUNTING",
+    "programme_status": "UNKNOWN",
+    "role_function": "OTHER"
+  },
+  {
+    "company_name": "Cambridge Associates",
+    "programme": "Investment Summer Analyst (Intern)",
+    "opening_date": "03 Oct 25",
+    "closing_date": "17 Oct 25",
+    "latest_stage": "",
+    "firm_type": "CONSULTING",
+    "programme_status": "CLOSED",
+    "role_function": "CONSULTING"
+  },
+  {
+    "company_name": "FTI Consulting",
+    "programme": "2026 Summer Internship",
+    "opening_date": "27 Oct 25",
+    "closing_date": "18 Dec 25",
+    "latest_stage": "Offers Out",
+    "firm_type": "CONSULTING",
+    "programme_status": "CLOSED",
+    "role_function": "CONSULTING"
+  },
+  {
+    "company_name": "Teneo",
+    "programme": "Financial Advisory Internship 2026",
+    "opening_date": "01 Oct 25",
+    "closing_date": "15 Dec 25",
+    "latest_stage": "",
+    "firm_type": "CONSULTING",
+    "programme_status": "CLOSED",
+    "role_function": "CONSULTING"
+  },
+  {
+    "company_name": "EY-Parthenon",
+    "programme": "Summer Internship 2026",
+    "opening_date": "18 Sep 25",
+    "closing_date": "01 Jan 26",
+    "latest_stage": "",
+    "firm_type": "CONSULTING",
+    "programme_status": "CLOSED",
+    "role_function": "CONSULTING"
+  },
+  {
+    "company_name": "Alvarez & Marsal",
+    "programme": "Summer Intern, Corporate Finance",
+    "opening_date": "04 Sep 25",
+    "closing_date": "15 Dec 25",
+    "latest_stage": "",
+    "firm_type": "CONSULTING",
+    "programme_status": "CLOSED",
+    "role_function": "INVESTMENT_BANKING"
+  },
+  {
+    "company_name": "Kroll",
+    "programme": "Intern, Restructuring (2026 Start)",
+    "opening_date": "",
+    "closing_date": "",
+    "latest_stage": "",
+    "firm_type": "CONSULTING",
+    "programme_status": "UNKNOWN",
+    "role_function": "INVESTMENT_BANKING"
+  },
+  {
+    "company_name": "Frontier Economics",
+    "programme": "2026 Economic Intern (Short-term)",
+    "opening_date": "15 Sep 25",
+    "closing_date": "27 Jan 26",
+    "latest_stage": "",
+    "firm_type": "CONSULTING",
+    "programme_status": "CLOSED",
+    "role_function": "CONSULTING"
+  },
+  {
+    "company_name": "GEP",
+    "programme": "Intern - Consulting 2026",
+    "opening_date": "09 Feb 26",
+    "closing_date": "",
+    "latest_stage": "",
+    "firm_type": "CONSULTING",
+    "programme_status": "UNKNOWN",
+    "role_function": "CONSULTING"
+  },
+  {
+    "company_name": "Plural Strategy",
+    "programme": "Strategy Consulting Intern",
+    "opening_date": "10 Dec 25",
+    "closing_date": "",
+    "latest_stage": "",
+    "firm_type": "CONSULTING",
+    "programme_status": "UNKNOWN",
+    "role_function": "CONSULTING"
+  },
+  {
+    "company_name": "CFO Insights",
+    "programme": "Management Consulting Internship",
+    "opening_date": "30 Oct 25",
+    "closing_date": "",
+    "latest_stage": "",
+    "firm_type": "CONSULTING",
+    "programme_status": "UNKNOWN",
+    "role_function": "CONSULTING"
+  },
+  {
+    "company_name": "Retail Insights",
+    "programme": "Management Consulting Internship",
+    "opening_date": "30 Oct 25",
+    "closing_date": "",
+    "latest_stage": "",
+    "firm_type": "CONSULTING",
+    "programme_status": "UNKNOWN",
+    "role_function": "CONSULTING"
+  },
+  {
+    "company_name": "Fide Partners",
+    "programme": "Associate Consultant Intern",
+    "opening_date": "29 Oct 25",
+    "closing_date": "",
+    "latest_stage": "",
+    "firm_type": "CONSULTING",
+    "programme_status": "UNKNOWN",
+    "role_function": "CONSULTING"
+  },
+  {
+    "company_name": "Accuracy",
+    "programme": "Finance Intern",
+    "opening_date": "10 Sep 25",
+    "closing_date": "",
+    "latest_stage": "",
+    "firm_type": "CONSULTING",
+    "programme_status": "UNKNOWN",
+    "role_function": "OTHER"
+  },
+  {
+    "company_name": "Compass Lexecon",
+    "programme": "Intern (Summer 2026)",
+    "opening_date": "08 Sep 25",
+    "closing_date": "",
+    "latest_stage": "",
+    "firm_type": "CONSULTING",
+    "programme_status": "UNKNOWN",
+    "role_function": "CONSULTING"
+  },
+  {
+    "company_name": "McKinsey & Company",
+    "programme": "Business Analyst Intern",
+    "opening_date": "31 Aug 25",
+    "closing_date": "",
+    "latest_stage": "Offers Out",
+    "firm_type": "CONSULTING",
+    "programme_status": "CLOSED",
+    "role_function": "CONSULTING"
+  },
+  {
+    "company_name": "AlphaSights",
+    "programme": "Insight Days, Client Service",
+    "opening_date": "18 Nov 25",
+    "closing_date": "",
+    "latest_stage": "",
+    "firm_type": "OTHER",
+    "programme_status": "UNKNOWN",
+    "role_function": "CONSULTING"
+  },
+  {
+    "company_name": "Galaxy",
+    "programme": "2026 Summer Internship",
+    "opening_date": "03 Feb 26",
+    "closing_date": "",
+    "latest_stage": "",
+    "firm_type": "OTHER",
+    "programme_status": "UNKNOWN",
+    "role_function": "MARKETS_TRADING"
+  },
+  {
+    "company_name": "Chatham Financial",
+    "programme": "Intern, Investment Management",
+    "opening_date": "04 Feb 26",
+    "closing_date": "",
+    "latest_stage": "",
+    "firm_type": "OTHER",
+    "programme_status": "UNKNOWN",
+    "role_function": "OTHER"
+  },
+  {
+    "company_name": "TIAA",
+    "programme": "Summer Intern 2026 - Based in London",
+    "opening_date": "",
+    "closing_date": "",
+    "latest_stage": "",
+    "firm_type": "OTHER",
+    "programme_status": "UNKNOWN",
+    "role_function": "OTHER"
+  },
+  {
+    "company_name": "Galaxy",
+    "programme": "2026 Summer Internship",
+    "opening_date": "03 Feb 26",
+    "closing_date": "",
+    "latest_stage": "",
+    "firm_type": "OTHER",
+    "programme_status": "UNKNOWN",
+    "role_function": "MARKETS_TRADING"
+  },
+  {
+    "company_name": "State Street",
+    "programme": "eFX Summer Internship (10 Weeks)",
+    "opening_date": "28 Oct 25",
+    "closing_date": "04 Nov 25",
+    "latest_stage": "",
+    "firm_type": "OTHER",
+    "programme_status": "CLOSED",
+    "role_function": "MARKETS_TRADING"
+  },
+  {
+    "company_name": "Chatham Financial",
+    "programme": "Intern, Financial Risk Advisory",
+    "opening_date": "02 Feb 26",
+    "closing_date": "",
+    "latest_stage": "",
+    "firm_type": "OTHER",
+    "programme_status": "UNKNOWN",
+    "role_function": "RISK_COMPLIANCE"
+  },
+  {
+    "company_name": "AlphaSights",
+    "programme": "Insight Days, Client Service",
+    "opening_date": "18 Nov 25",
+    "closing_date": "",
+    "latest_stage": "",
+    "firm_type": "OTHER",
+    "programme_status": "UNKNOWN",
+    "role_function": "CONSULTING"
+  },
+  {
+    "company_name": "Chatham Financial",
+    "programme": "Capital Markets Summer Analyst 2026",
+    "opening_date": "",
+    "closing_date": "",
+    "latest_stage": "",
+    "firm_type": "OTHER",
+    "programme_status": "UNKNOWN",
+    "role_function": "MARKETS_TRADING"
+  },
+  {
+    "company_name": "Tide Insurance",
+    "programme": "2026 Summer Placement",
+    "opening_date": "24 Nov 25",
+    "closing_date": "11 Dec 25",
+    "latest_stage": "",
+    "firm_type": "OTHER",
+    "programme_status": "CLOSED",
+    "role_function": "OTHER"
+  },
+  {
+    "company_name": "IQT",
+    "programme": "Investment Associate Internship (US Citizens Only)",
+    "opening_date": "03 Nov 25",
+    "closing_date": "27 Jan 26",
+    "latest_stage": "",
+    "firm_type": "OTHER",
+    "programme_status": "CLOSED",
+    "role_function": "OTHER"
+  },
+  {
+    "company_name": "Blackfinch Group",
+    "programme": "Blackfinch Summer 2026 Internship Programme",
+    "opening_date": "09 Feb 26",
+    "closing_date": "02 Apr 26",
+    "latest_stage": "",
+    "firm_type": "OTHER",
+    "programme_status": "OPEN",
+    "role_function": "OTHER"
+  },
+  {
+    "company_name": "AustralianSuper",
+    "programme": "2026 Intern Program",
+    "opening_date": "04 Feb 26",
+    "closing_date": "01 Mar 26",
+    "latest_stage": "",
+    "firm_type": "OTHER",
+    "programme_status": "CLOSED",
+    "role_function": "OTHER"
+  },
+  {
+    "company_name": "Legal & General",
+    "programme": "Intern Programme 2026",
+    "opening_date": "28 Jan 26",
+    "closing_date": "",
+    "latest_stage": "",
+    "firm_type": "OTHER",
+    "programme_status": "UNKNOWN",
+    "role_function": "OTHER"
+  },
+  {
+    "company_name": "Leo-Crown Estates",
+    "programme": "Intern - Dubai Real Estate",
+    "opening_date": "20 Nov 25",
+    "closing_date": "20 Nov 25",
+    "latest_stage": "",
+    "firm_type": "OTHER",
+    "programme_status": "CLOSED",
+    "role_function": "OTHER"
+  },
+  {
+    "company_name": "Weatherbys Private Bank",
+    "programme": "Summer Internship Programme 2026",
+    "opening_date": "17 Nov 25",
+    "closing_date": "27 Jan 26",
+    "latest_stage": "",
+    "firm_type": "OTHER",
+    "programme_status": "CLOSED",
+    "role_function": "OTHER"
+  },
+  {
+    "company_name": "JLL",
+    "programme": "Capital Markets Intern - London",
+    "opening_date": "11 Nov 25",
+    "closing_date": "28 Nov 25",
+    "latest_stage": "",
+    "firm_type": "OTHER",
+    "programme_status": "CLOSED",
+    "role_function": "OTHER"
+  },
+  {
+    "company_name": "First Wealth",
+    "programme": "Summer Internship 2026",
+    "opening_date": "27 Oct 25",
+    "closing_date": "21 Nov 25",
+    "latest_stage": "",
+    "firm_type": "OTHER",
+    "programme_status": "CLOSED",
+    "role_function": "OTHER"
+  }
+]

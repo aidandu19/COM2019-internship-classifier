@@ -24,8 +24,9 @@ FIRM_TYPE_COLOURS = {
     "MIDDLE_MARKET_IB":   "4A90D9",  # medium blue
     "BUY_SIDE_PE":        "6A1B9A",  # purple
     "ASSET_MANAGEMENT":   "00695C",  # teal
-    "HEDGE_FUND_TRADING": "B71C1C",  # dark red
+    "HEDGE_FUND":         "B71C1C",  # dark red
     "QUANT_PROP":         "E65100",  # deep orange
+    "ACCOUNTING":         "37474F",  # dark blue-grey
     "CONSULTING":         "4E342E",  # brown
     "OTHER":              "616161",  # grey
     "UNKNOWN":            "9E9E9E",  # light grey

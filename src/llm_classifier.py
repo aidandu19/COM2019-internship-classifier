@@ -3,15 +3,15 @@
 # Uses gpt-4o-mini with structured outputs (response_format) to classify
 # finance internship listings by firm type, role function, and programme status.
 # Supports batching (8-10 listings per API call), local JSON caching,
-# retry logic via tenacity, and a repair loop for schema validation failures.
+# retry logic, and a repair loop for schema validation failures.
 
 import os
 import json
+import time
 import hashlib
 
 from openai import OpenAI
 from dotenv import load_dotenv
-from tenacity import retry, stop_after_attempt, wait_exponential, retry_if_exception_type
 
 from .taxonomy import FIRM_TYPES, ROLE_FUNCTIONS, PROGRAMME_STATUSES
 from .schema import OPENAI_RESPONSE_FORMAT, BATCH_VALIDATOR
@@ -119,39 +119,35 @@ def _save_to_cache(key: str, data: dict):
 
 
 # ---------------------------------------------------------------------------
-# API call with tenacity retry
+# API call with retry loop
 # ---------------------------------------------------------------------------
 
-@retry(
-    reraise=True,
-    stop=stop_after_attempt(3),
-    wait=wait_exponential(min=2, max=30),
-    retry=retry_if_exception_type(Exception),
-)
 def _call_chat_completions(system_msg: str, user_msg: str,
                            model: str = MODEL_MINI) -> str:
     """Call OpenAI Chat Completions API with structured output format.
 
-    Uses response_format with json_schema to enforce the output structure
-    directly at the API level (ILO 6 requirement). The model is constrained
-    to return valid JSON matching our schema.
-
-    Args:
-        system_msg: system prompt with classification instructions.
-        user_msg: formatted batch of listings to classify.
-        model: OpenAI model ID. Defaults to gpt-4o-mini; escalation
-               uses gpt-4o for low-confidence reclassification.
+    Retries up to 3 times with exponential backoff on failure.
+    Uses response_format with json_schema to enforce the output structure.
     """
-    response = client.chat.completions.create(
-        model=model,
-        messages=[
-            {"role": "system", "content": system_msg},
-            {"role": "user", "content": user_msg},
-        ],
-        temperature=0.0,
-        response_format=OPENAI_RESPONSE_FORMAT,
-    )
-    return response.choices[0].message.content
+    for attempt in range(3):
+        try:
+            response = client.chat.completions.create(
+                model=model,
+                messages=[
+                    {"role": "system", "content": system_msg},
+                    {"role": "user", "content": user_msg},
+                ],
+                temperature=0.0,
+                response_format=OPENAI_RESPONSE_FORMAT,
+            )
+            return response.choices[0].message.content
+        except Exception as e:
+            if attempt < 2:
+                wait = 2 * (2 ** attempt)  # 2s, 4s backoff
+                print(f"  [llm] Attempt {attempt + 1} failed: {e}, retrying in {wait}s...")
+                time.sleep(wait)
+            else:
+                raise
 
 
 # ---------------------------------------------------------------------------
