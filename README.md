@@ -2,6 +2,12 @@
 
 An LLM-powered classification pipeline for UK finance internship listings. Classifies listings by firm type, role function, and programme status using a two-tier model strategy (gpt-4o-mini with gpt-4o escalation), evaluated against a 153-entry hand-labelled gold standard.
 
+## Pipeline Architecture
+
+<p align="center">
+  <img src="llm_classifier_pipeline_architecture.svg" alt="LLM Classifier Pipeline Architecture" width="680"/>
+</p>
+
 ## Branches
 
 | Branch | Description |
