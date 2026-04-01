@@ -14,7 +14,7 @@ An LLM-powered classification pipeline for UK finance internship listings. Class
 ```
 main.py                  # pipeline entry point
 requirements.txt         # dependencies
-.env           # API key placeholder
+.env                     # API key placeholder
 
 src/                     # source code
   taxonomy.py            # classification enums
